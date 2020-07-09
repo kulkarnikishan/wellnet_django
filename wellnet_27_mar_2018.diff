@@ -1,0 +1,1096 @@
+diff --git a/ReadMe.md b/ReadMe.md
+index 4fdca41..33fa401 100755
+--- a/ReadMe.md
++++ b/ReadMe.md
+@@ -9,4 +9,4 @@ Steps to Install WellNet Server
+ 7. python manage.py migrate
+ 8. python manage.py loaddata services/fixtures/initial_data.json
+ 9. python manage.py createsuperuser
+-10. pyhton manage.py runserver 0.0.0.0:8084
++10. python manage.py runserver 0.0.0.0:8084
+diff --git a/requirements.txt b/requirements.txt
+index ca88471..e0943bf 100755
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -30,4 +30,4 @@ tinycss==0.3
+ xhtml2pdf==0.0.6
+ xlwt==0.7.4
+ yarg==0.1.9
+-django-mathfilters=0.4.0
++django-mathfilters==0.4.0
+diff --git a/wellnet/services/admin.py b/wellnet/services/admin.py
+index ef4ba87..5d77781 100755
+--- a/wellnet/services/admin.py
++++ b/wellnet/services/admin.py
+@@ -117,7 +117,7 @@ class ChannelPartnerAdmin(BaseUserAdmin):
+     inlines = [PartnerAsOwnerInline, PartnerBranchInline]
+ 
+     fieldsets = [
+-        ('Dealer Category', {'fields': ['dealership_category']}),
++        ('Dealer Category', {'fields': ['dealership_category','dealer_code']}),
+         ('Create Dealer', {'fields': ['username', 'email', 'password', 'is_staff', 'is_active']}),
+         ('Company Info', {
+             'fields': ['company_name', 'company_name_invoice', 'segments', 'state', 'city', 'company_address',
+@@ -126,7 +126,7 @@ class ChannelPartnerAdmin(BaseUserAdmin):
+                                       'number_of_products', 'year_of_establishment', 'manager']})
+     ]
+     add_fieldsets = [
+-        ('Dealer Category', {'fields': ['dealership_category']}),
++        ('Dealer Category', {'fields': ['dealership_category','dealer_code']}),
+         ('Create Dealer', {'fields': ['username', 'email', 'password1', 'password2', 'is_staff', 'is_active']}),
+         ('Company Info', {
+             'fields': ['company_name', 'company_name_invoice', 'segments', 'state', 'city', 'company_address',
+@@ -134,7 +134,7 @@ class ChannelPartnerAdmin(BaseUserAdmin):
+         ('Other Details', {'fields': ['GSTIN', 'company_pan_number', 'number_of_staff', 'number_of_branches',
+                                       'number_of_products', 'year_of_establishment', 'manager']})
+     ]
+-    list_display = ('id', 'username', 'company_name', 'dealership_category', 'landline', 'is_active')
++    list_display = ('id','username','dealer_code','company_name', 'landline', 'is_active')
+ 
+     def get_queryset(self, request):
+         qs = super(ChannelPartnerAdmin, self).get_queryset(request)
+@@ -340,6 +340,13 @@ class BookingAdmin(admin.ModelAdmin):
+                     ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']})):
+                 fs.remove(
+                     ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']}))
++            if obj is not None and 'SuperAdmin' in l:
++                if fs.__contains__( ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']})) :
++                    pass
++                else :
++                    fs.append(
++                    ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']}))
++                
+             if 'SubDealer' in l or 'EmployeeGroup' in l or 'SuperAdmin' in l:
+                 self.readonly_fields = []
+                 if not fs.__contains__(('Partner', {'fields': ['createdFor']})):
+@@ -358,9 +365,9 @@ class BookingAdmin(admin.ModelAdmin):
+ 
+     def get_queryset(self, request):
+         qs = super(BookingAdmin, self).get_queryset(request)
+-        if request.user.is_superuser:
+-            return qs
+         l = request.user.groups.values_list('name', flat=True)
++        if request.user.is_superuser or 'SuperAdmin' in l:
++            return qs
+         if 'SubDealer' in l:
+             emps = Employee.objects.filter(createdBy=request.user.pk)
+             cps = ChannelPartner.objects.filter(Q(manager__in=emps) | Q(createdBy=request.user))
+@@ -403,7 +410,7 @@ class BookingAdmin(admin.ModelAdmin):
+         super(BookingAdmin, self).save_related(request, form, formset, change)
+         if not change:
+             ""
+-            # send_booking_confirmation(form.instance)
++            #send_booking_confirmation(form.instance)
+             pass
+ #pro forma
+ class ProFormaProductQuantityInline(admin.TabularInline):
+@@ -423,6 +430,7 @@ class ProFormaBookingAdmin(admin.ModelAdmin):
+         (None,{'fields':['is_IGST',]}),
+         ('Amount', {
+             'fields': ['gross_amount', 'IGST_amount', 'SGST_amount', 'CGST_amount', 'amount']}),
++	('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']}),
+     ]
+     inlines = [ProFormaProductQuantityInline, ]
+     list_display = ('id', 'products', 'created_For', 'created_date', 'amount',
+@@ -461,6 +469,17 @@ class ProFormaBookingAdmin(admin.ModelAdmin):
+                 self.readonly_fields = []
+                 if not fs.__contains__(('Partner', {'fields': ['created_For']})):
+                     fs.append(('Partner', {'fields': ['created_For']}))
++            if obj is not None and 'SuperAdmin' in l:
++                if fs.__contains__( ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']})) :
++                    pass
++                else :
++                    fs.append(
++                    ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']}))
++            else :
++                if fs.__contains__( ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']})) :
++                    fs.remove(
++                    ('Cancellation Request', {'classes': ('collapse',), 'fields': ['is_cancelled', 'cancel_reason']}))
++
+             # else:
+             #     if fs.__contains__(('Partner', {'fields': ['created_For']})):
+             #         ## remove Parnter field
+@@ -470,7 +489,7 @@ class ProFormaBookingAdmin(admin.ModelAdmin):
+     def get_queryset(self, request):
+         qs = super(ProFormaBookingAdmin, self).get_queryset(request)
+         l = request.user.groups.values_list('name', flat=True)
+-        if request.user.is_superuser:
++        if request.user.is_superuser or 'SuperAdmin' in l:
+             return qs
+         if 'SubDealer' in l:
+             emps = Employee.objects.filter(createdBy=request.user.pk)
+@@ -814,7 +833,6 @@ class ExportXlsAdmin(admin.ModelAdmin):
+     list_display = ['id', 'model_type', 'from_date', 'to_date', ]
+ 
+     def save_model(self, request, obj, form, change):
+-        print request.user
+         super(ExportXlsAdmin, self).save_model(request, obj, form, change)
+ 
+     def response_add(self, request, obj, post_url_continue=None):
+diff --git a/wellnet/services/models.py b/wellnet/services/models.py
+index 777a964..5917244 100755
+--- a/wellnet/services/models.py
++++ b/wellnet/services/models.py
+@@ -238,6 +238,7 @@ class PartnerAsOwner(models.Model):
+ 
+ class ChannelPartner(BaseUser):
+     company_name = models.CharField(max_length=255, blank=False)
++    dealer_code = models.CharField(max_length=255, blank=False)
+     dealership_category = models.ForeignKey('DealersType', null=False, blank=False, default=4)
+     company_name_invoice = models.CharField("Company Name For Invoice", max_length=255, blank=False, default="wellnet")
+     hire_date = models.DateField(default=timezone.now)
+@@ -442,6 +443,8 @@ class ProFormaBooking(models.Model):
+     CGST_amount = models.DecimalField(max_digits=30, decimal_places=2)
+     IGST_amount = models.DecimalField(max_digits=30, decimal_places=2)
+     is_IGST = models.BooleanField('IGST Format', default=False)
++    is_cancelled = models.BooleanField('Cancel this booking?', default=False)
++    cancel_reason = models.CharField(max_length=255, null=True, blank=True)
+     contact_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)], null=True, blank=True)
+     created_date = models.DateField(default=timezone.now)
+     updated = models.DateField(default=timezone.now)
+diff --git a/wellnet/services/reports.py b/wellnet/services/reports.py
+index d47f3c6..436bbfe 100755
+--- a/wellnet/services/reports.py
++++ b/wellnet/services/reports.py
+@@ -518,10 +518,13 @@ def export_xls(obj, request):
+                        'created_date',
+                        'updated',
+                        # 'send_receipt',
+-                       'createdFor',
++                       'dealer code',
++			'createdFor',
+                        'city', 'state',
+                        'createdBy',
+                        'updatedBy',
++                       'is Cancelled',
++                       'Cancel Reason',
+                        'wellnet manager',
+                        'requested_by']
+             for col_num in xrange(len(columns)):
+@@ -535,14 +538,21 @@ def export_xls(obj, request):
+                 order_delivery_date = objs.order_delivery_date.strftime("%d-%m-%Y") if objs.order_delivery_date else ""
+                 created_date = objs.created_date.strftime("%d-%m-%Y") if objs.created_date else ""
+                 updated = objs.updated.strftime("%d-%m-%Y") if objs.updated else ""
++                iscancelled = "YES" if objs.is_cancelled else "NO"
++                cancel_reason = objs.cancel_reason if objs.cancel_reason else "NA"
++
+                 row = [row_num,
+                        objs.pk,prd, objs.payment_type.description, objs.gross_amount,
+                        objs.amount, objs.SGST_amount, objs.CGST_amount,
+                        objs.IGST_amount,trans_date,realisation_date,
+                       expected_delivery_date, order_delivery_date,created_date,
+-                       updated, objs.createdFor.username, objs.createdFor.city.name,
++                       updated,
++			objs.createdFor.dealer_code, 
++			objs.createdFor.username, objs.createdFor.city.name,
+                        objs.createdFor.state.name, objs.createdBy.username,
+                        objs.updatedBy.username,
++                       iscancelled,
++                       cancel_reason,
+                        objs.createdFor.manager.username
+                        ,request.user.username
+                        ]
+@@ -561,11 +571,14 @@ def export_xls(obj, request):
+                        'created_date',
+                        'updated',
+                        # 'send_receipt',a
++                       'dealer code',
+                        'created_For',
+                        'city',
+                        'state',
+                        'createdBy',
+                        'updated_By',
++			'Is Cancelled',
++			'Cancel Reason',
+                        'Wellnet manager',
+                        'requested_by']
+             for col_num in xrange(len(columns)):
+@@ -577,13 +590,19 @@ def export_xls(obj, request):
+                                 ProFormaProductQuantity.objects.filter(booking=objs.pk)])
+                 created_date = objs.created_date.strftime("%d-%m-%Y") if objs.created_date else ""
+                 updated = objs.updated.strftime("%d-%m-%Y") if objs.updated else ""
++                iscancelled = "YES" if objs.is_cancelled else "NO"
++                cancel_reason = objs.cancel_reason if objs.cancel_reason else "NA"
+                 row = [row_num,
+                        objs.pk, prd, objs.gross_amount,
+                        objs.amount, objs.SGST_amount, objs.CGST_amount,
+                        objs.IGST_amount,created_date,
+-                       updated, objs.created_For.username, objs.created_For.city.name,
++                       updated,
++			objs.created_For.dealer_code, 
++			objs.created_For.username, objs.created_For.city.name,
+                        objs.created_For.state.name, objs.createdBy.username,
+                        objs.updated_By.username,
++                       iscancelled,
++                       cancel_reason,
+                        objs.created_For.manager.username
+                        ,request.user.username
+                        ]
+@@ -670,7 +689,7 @@ def export_xls(obj, request):
+         # partner
+         model_obj = ChannelPartner.objects.all()
+         if model_obj:
+-            columns = ['Sl No.', 'username', 'email', 'is_staff', 'dealership_category', 'company_name',
++            columns = ['Sl No.','dealer code', 'username', 'email', 'is_staff', 'dealership_category', 'company_name', 
+                        'company_name_invoice', 'segments', 'state', 'city', 'company_address',
+                        'pin_code', 'landline', 'GSTIN', 'company_pan_number', 'number_of_staff',
+                        'number_of_branches',
+@@ -684,7 +703,8 @@ def export_xls(obj, request):
+                         seg += segment.description + ","
+                 row_num += 1
+                 row = [row_num,
+-                       objs.username, objs.email, objs.is_staff, objs.dealership_category.description,
++                       objs.dealer_code,
++			objs.username, objs.email, objs.is_staff, objs.dealership_category.description,
+                        objs.company_name, objs.company_name_invoice, seg[:-1], objs.state.name, objs.city.name,
+                        objs.company_address, objs.pin_code,
+                        objs.landline, objs.GSTIN, objs.company_pan_number, objs.number_of_staff,
+diff --git a/wellnet/services/views.py b/wellnet/services/views.py
+index ccc1466..c3bbd84 100755
+--- a/wellnet/services/views.py
++++ b/wellnet/services/views.py
+@@ -137,7 +137,7 @@ def totalAmountForProduct(request):
+             igst_total += igst
+             gross += amt
+             total_amt = total_amt + amt + service_tax + vat
+-            igst_total_amt = igst_total_amt + amt + igst_total
++            igst_total_amt = igst_total_amt + amt + igst
+         data = {'gross': Decimal(gross).quantize(Decimal('0.01'), rounding=ROUND_DOWN),
+                 'amount': Decimal(total_amt).quantize(Decimal('.01'), rounding=ROUND_DOWN),
+                 'igst_total_amt': Decimal(igst_total_amt).quantize(Decimal('.01'), rounding=ROUND_DOWN),
+@@ -305,12 +305,20 @@ def sendCPInvoice(request, invoice, toUser, send_email=False,pro_form= False):
+     templateVars = {
+         'title': 'Invoice',
+         'company_name': toUser.company_name,
++        'company_name_for_invoice': toUser.company_name_invoice,
++        'dealer_code': toUser.dealer_code,
+         'city': "Bangalore",
++	"u_state":toUser.state.name,
++	"u_city":toUser.city.name,
+         'owner_name': owner.name,
+         'company_address': toUser.company_address,
+         'invoice_number': invoice.id,
++     	'registration_number': toUser.GSTIN.upper(),
+         'is_pro_forma': pro_form,
+         'invoice_date': invoice.created_date,
++  'IGST_amount_total': invoice.IGST_amount,
++                'CGST_amount_total': invoice.CGST_amount,
++                'SGST_amount_total': invoice.SGST_amount,
+         'invoice_amount': invoice.amount,
+         'total_amount': invoice.amount
+     }
+@@ -374,11 +382,23 @@ def sendCPInvoice(request, invoice, toUser, send_email=False,pro_form= False):
+             filename=file_name,
+             context=templateVars,
+             cmd_options={'load-error-handling': 'ignore'})
++    
++
++    partner = PartnerBranch.objects.filter(partner=toUser.pk)
++    email_id = None
++    name = None
++    if partner:
++        email_id = partner[0].authorized_person_email
++        name = partner[0].authorized_person_name
++
++    else:
++        email_id = toUser.email
++        name = owner.name
+     if send_email:
+         if not pro_form:
+             ## TODO: Use text template to fit in data, this is ugly patch
+             subject = "Invoice of your Booking in WellNet"
+-            content = 'Dear %s,\n' % owner.name
++            content = 'Dear %s,\n' % name
+             content = content + 'We are pleased to inform you that following items in your Order# %s' % invoice.id
+             content = content + ' have been Confirmed and will be delivered to you on or before %s.' % invoice.expected_delivery_date.strftime("%d-%m-%Y")
+             content = content + '\n\nAs a part of go-green initiative we will not be sending the invoice to you with the shipment. \
+@@ -387,7 +407,7 @@ def sendCPInvoice(request, invoice, toUser, send_email=False,pro_form= False):
+             ## TODO: Use text template to fit in data, this is ugly patch
+             ## For Proform invoice email body
+             subject = "Pro Forma Invoice of your Booking in WellNet"
+-            content = 'Dear %s,\n' % owner.name
++            content = 'Dear %s,\n' % name
+             content = content + "We are pleased to provide you a pro forma Invoice for your enquiry."
+             content = content + ' Please note that this is a pro forma invoice only, meant to provide you an estimate. The final invoice will be generated based on your actual purchase order.'
+             content = content + '\n\nAs a part of go-green initiative we will not be sending the hard copy of the pro forma invoice. \
+@@ -396,7 +416,7 @@ def sendCPInvoice(request, invoice, toUser, send_email=False,pro_form= False):
+         cc = ["sridhar@wellnetservices.com"]
+         if toUser.manager.email not in cc:
+             cc.append(toUser.manager.email)
+-        mail = EmailMessage(subject, content, from_email, [toUser.email],cc=cc)
++        mail = EmailMessage(subject, content, from_email, [email_id],cc=cc)
+         mail.attach(file_name, pdf_response.rendered_content, 'application/pdf')
+ 
+         try:
+@@ -413,9 +433,8 @@ def sendCPInvoice(request, invoice, toUser, send_email=False,pro_form= False):
+ def download_pdf(request, id):
+     channelpartner = None
+     invoice = Booking.objects.filter(pk=id)[0]if Booking.objects.filter(pk=id) else  None
+-    print invoice.utr_number
+     l = request.user.groups.values_list('name', flat=True)
+-    if 'SuperAdmin' in l:
++    if 'SuperAdmin' in l or 'EmployeeGroup' in l:
+         if invoice:
+             l = request.user.groups.values_list('name', flat=True)
+             if 'ChannelPartnerGroup' in l:
+@@ -427,12 +446,20 @@ def download_pdf(request, id):
+             templateVars = {
+                 'title': 'Invoice',
+                 'company_name': channelpartner.company_name,
++        	'company_name_for_invoice': channelpartner.company_name_invoice,
+                 'city': "Bangalore",
++		"u_state":channelpartner.state.name,
++		"u_city":channelpartner.city.name,
++        	'dealer_code': channelpartner.dealer_code,
++
+                 'owner_name': owner.name,
+                 'company_address': channelpartner.company_address,
+                 'registration_number': channelpartner.GSTIN.upper(),
+                 'invoice_number': invoice.id,
+                 'invoice_date': invoice.created_date,
++  'IGST_amount_total': invoice.IGST_amount,
++                'CGST_amount_total': invoice.CGST_amount,
++                'SGST_amount_total': invoice.SGST_amount,
+                 'invoice_amount': invoice.amount,
+                 'total_amount': invoice.amount
+             }
+@@ -481,7 +508,7 @@ def download_ProForma_pdf(request, id):
+     channelpartner = None
+     invoice = ProFormaBooking.objects.filter(pk=id)[0] if ProFormaBooking.objects.filter(pk=id) else  None
+     l = request.user.groups.values_list('name', flat=True)
+-    if 'SuperAdmin' in l:
++    if 'SuperAdmin' in l or 'EmployeeGroup' in l:
+         if invoice:
+             l = request.user.groups.values_list('name', flat=True)
+             if 'ChannelPartnerGroup' in l:
+@@ -493,13 +520,20 @@ def download_ProForma_pdf(request, id):
+             templateVars = {
+                 'title': 'Invoice',
+                 'company_name': channelpartner.company_name,
++        	'company_name_for_invoice': channelpartner.company_name_invoice,
++        	'dealer_code': channelpartner.dealer_code,
+                 'city': "Bangalore",
+-                'owner_name': owner.name,
++ 		"u_state":channelpartner.state.name,
++		"u_city":channelpartner.city.name,
++               	'owner_name': owner.name,
+                 'company_address': channelpartner.company_address,
+                 'is_pro_forma': True,
+                 'registration_number': channelpartner.GSTIN.upper(),
+                 'invoice_number': invoice.id,
+                 'invoice_date': invoice.created_date,
++  		'IGST_amount_total': invoice.IGST_amount,
++                'CGST_amount_total': invoice.CGST_amount,
++                'SGST_amount_total': invoice.SGST_amount,
+                 'invoice_amount': invoice.amount,
+                 'total_amount': invoice.amount
+             }
+@@ -522,7 +556,7 @@ def download_ProForma_pdf(request, id):
+                 invoice_products.append(prod)
+             templateVars['invoice_products'] = invoice_products
+             templateVars['grand_total'] = invoice.amount
+-            file_name = 'invoice_{}_{}.pdf'.format(invoice.id, invoice.updated)
++            file_name = 'pro-forma-invoice_{}_{}.pdf'.format(invoice.id, invoice.updated)
+             if invoice.is_IGST:
+                 pdf_response = PDFTemplateResponse(
+                     request=request,
+@@ -548,7 +582,7 @@ def download_receipt_pdf(request,id):
+     channelpartner = None
+     l = request.user.groups.values_list('name', flat=True)
+     invoice = Booking.objects.filter(pk=id)[0] if Booking.objects.filter(pk=id) else None
+-    if "SuperAdmin" in l:
++    if "SuperAdmin" in l or 'EmployeeGroup' in l:
+         if invoice.payment_type.description == "Credit Period" or ( not invoice.realisation_date):
+             return HttpResponseForbidden('<h3>Please update the Payment Details(Online Transfer) and Delivery Info</h3>', content_type='text/html')
+         if invoice:
+@@ -560,17 +594,27 @@ def download_receipt_pdf(request,id):
+             templateVars = {
+                 'title': 'Payment Receipt',
+                 'company_name': channelpartner.company_name,
++        	'company_name_for_invoice': channelpartner.company_name_invoice,
++        	'dealer_code': channelpartner.dealer_code,
+                 'owner_name': owner.name,
+                 'company_address': channelpartner.company_address,
+                 'city': "Bangalore",
+-                'invoice_number': invoice.id,
++ 		"u_state":channelpartner.state.name,
++		"u_city":channelpartner.city.name,
++               	'invoice_number': invoice.id,
+                 'invoice_date': invoice.created_date,
+                 'invoice_amount': invoice.amount,
+                 'total_amount': invoice.amount,
++  		'IGST_amount_total': invoice.IGST_amount,
++                'CGST_amount_total': invoice.CGST_amount,
++                'SGST_amount_total': invoice.SGST_amount,
+                 'registration_number': channelpartner.GSTIN.upper(),
+                 'receipt_date': invoice.updated,
+                 'payment_date': invoice.transfer_date,
+-                'payment_type': {'id': invoice.payment_type.id, 'description': invoice.payment_type.description}
++                'payment_type': {'id': invoice.payment_type.id, 'description': invoice.payment_type.description},
++		'payment_desc': invoice.utr_number if invoice.utr_number else "NA",
++        	'bank_name': invoice.bank_name
++
+             }
+             prods = ProductQuantity.objects.filter(booking_id=invoice.pk)
+             invoice_products = []
+@@ -631,16 +675,23 @@ def sendCPReceipt(request, invoice, toUser, send_email=False):
+         'company_name': toUser.company_name,
+         'owner_name': owner.name,
+         'company_address': toUser.company_address,
++        'company_name_for_invoice': toUser.company_name_invoice,
++        'dealer_code': toUser.dealer_code,
+         'city': "Bangalore",
++	"u_state":toUser.state.name,
++	"u_city":toUser.city.name,
+         'invoice_number': invoice.id,
+         'invoice_date': invoice.created_date,
+         'invoice_amount': invoice.amount,
+         'total_amount': invoice.amount,
++	'IGST_amount_total': invoice.IGST_amount,
++      	'CGST_amount_total': invoice.CGST_amount,
++      	'SGST_amount_total': invoice.SGST_amount,
+         'registration_number': toUser.GSTIN,
+         'receipt_date': invoice.updated,
+         'payment_date': invoice.transfer_date,
+         'payment_type': {'id': invoice.payment_type.id, 'description': invoice.payment_type.description},
+-        'payment_desc': invoice.utr_number if invoice.utr_number else invoice.utr_number,
++        'payment_desc': invoice.utr_number if invoice.utr_number else "NA",
+         'bank_name': invoice.bank_name
+     }
+     prods = ProductQuantity.objects.filter(booking_id=invoice.pk)
+@@ -686,17 +737,26 @@ def sendCPReceipt(request, invoice, toUser, send_email=False):
+             filename=file_name,
+             context=templateVars,
+             cmd_options={'load-error-handling': 'ignore'})
++    partner = PartnerBranch.objects.filter(partner=toUser.pk)
++    email_id = None
++    name = None
++    if partner:
++        email_id = partner[0].authorized_person_email
++        name = partner[0].authorized_person_name
++    else:
++        email_id = toUser.email
++        name = owner.name
+     if send_email and invoice.transfer_date:
+         ## TODO: Use text template to fit in data, this is ugly patch
+         subject = "Receipt for Invoice#{} of your Booking in WellNet".format(invoice.id)
+-        content = 'Dear %s,\n' % owner.name
++        content = 'Dear %s,\n' % name
+         content = content + 'We are pleased to acknowledge receipt of your payment for  your Order# %s.' % invoice.id
+         content = content + "It was pleasure doing business with you and looking forward for a long term association"
+         content = content + '\n\nAs a part of go-green initiative we will not be sending hard copy of the receipt. For your reference, find soft copy of your receipt attached to this email. \n\nRegards,\nWellnet Team'
+         cc = ["sridhar@wellnetservices.com"]
+         if toUser.manager.email not in cc:
+             cc.append(toUser.manager.email)
+-        mail = EmailMessage(subject, content, from_email, [toUser.email],cc=cc)
++        mail = EmailMessage(subject, content, from_email, [email_id],cc=cc)
+         mail.attach(file_name, pdf_response.rendered_content, 'application/pdf')
+         try:
+             mail.send()
+diff --git a/wellnet/static/services/css/receipt.css b/wellnet/static/services/css/receipt.css
+index 5a6c288..57e45d7 100644
+--- a/wellnet/static/services/css/receipt.css
++++ b/wellnet/static/services/css/receipt.css
+@@ -350,3 +350,25 @@
+     @page {
+         margin: 0;
+     }
++
++    .header_style_4per{
++        width: 4%;
++    }
++    .header_style_5per{
++        width: 5%;
++    }.header_style_6per_igst{
++        width: 6%;
++    }
++    .header_style_30per{
++        width: 28%;
++    }
++    .header_style_20per{
++        width: 12%;
++    } .header_style_10per{
++        width: 10%;
++    }
++    .header_style_text_align_left{
++    text-align: left;
++    }.header_style_text_align_center{
++    text-align: center;
++    }
+diff --git a/wellnet/static/services/js/partner.js b/wellnet/static/services/js/partner.js
+index 3b2fa56..1a401d0 100755
+--- a/wellnet/static/services/js/partner.js
++++ b/wellnet/static/services/js/partner.js
+@@ -84,6 +84,9 @@
+          $('#id_GSTIN').keyup(function() {
+         this.value = this.value.toLocaleUpperCase();
+     });
++	$('#id_dealer_code').keyup(function() {
++        this.value = this.value.toLocaleUpperCase();
++    });
+         linkNewCheckBox();
+         $('select#id_manager').bind("DOMSubtreeModified", check_value_for_select);
+         $("select#id_manager").on('change', enable_edit_function);
+diff --git a/wellnet/static/services/material/js/jquery.datetimepicker.js b/wellnet/static/services/material/js/jquery.datetimepicker.js
+index 4c3f6f8..49849df 100644
+--- a/wellnet/static/services/material/js/jquery.datetimepicker.js
++++ b/wellnet/static/services/material/js/jquery.datetimepicker.js
+@@ -238,6 +238,7 @@
+ 		format:	'Y/m/d H:i',
+ 		formatTime:	'H:i',
+ 		formatDate:	'Y/m/d',
++		// /home/prakash/wellnet/wellnet_services/wellnet/static/material/js/jquery.datetimepicker.js
+ 
+ 		startDate:	false, // new Date(), '1986/12/08', '-1970/01/05','-1970/01/05',
+ 		step: 60,
+diff --git a/wellnet/static/services/services/material/js/jquery.datetimepicker.js b/wellnet/static/services/services/material/js/jquery.datetimepicker.js
+index 4c3f6f8..49849df 100644
+--- a/wellnet/static/services/services/material/js/jquery.datetimepicker.js
++++ b/wellnet/static/services/services/material/js/jquery.datetimepicker.js
+@@ -238,6 +238,7 @@
+ 		format:	'Y/m/d H:i',
+ 		formatTime:	'H:i',
+ 		formatDate:	'Y/m/d',
++		// /home/prakash/wellnet/wellnet_services/wellnet/static/material/js/jquery.datetimepicker.js
+ 
+ 		startDate:	false, // new Date(), '1986/12/08', '-1970/01/05','-1970/01/05',
+ 		step: 60,
+diff --git a/wellnet/templates/admin/invoiceGST.html b/wellnet/templates/admin/invoiceGST.html
+index 96f3fe9..ed82f36 100644
+--- a/wellnet/templates/admin/invoiceGST.html
++++ b/wellnet/templates/admin/invoiceGST.html
+@@ -37,11 +37,14 @@
+     <h1>Recipient</h1>
+     <address>
+         To<br>
+-        <h4 style="font-weight: bold">{{ company_name }}</h4>
+-        C/O {{ owner_name }}<br>
++        <h4 style="font-weight: bold">{{ company_name_for_invoice }}</h4>
++        <h5 style="font-weight: bold">{{ company_name }}</h5>
+ 
++        <!--c/o {{ owner_name }}<br>-->
+         <div id="address" style="height: auto; width:300px;">
+-            Address:<br> {{ company_address }}
++            {{ company_address }}
++	    <span>{{u_city}}</span><br>
++	    <span>{{u_state}}</span>
+         </div>
+     </address>
+     <table class="meta">
+@@ -53,6 +56,11 @@
+             <th><span>City</span></th>
+             <td><span>{{city}}</span></td>
+         </tr>
++	<tr>
++            <th><span>Dealer Code</span></th>
++            <td><span>{{dealer_code}}</span></td>
++        </tr>
++
+         <tr>
+             <th><span>Invoice #</span></th>
+             <td><span>{{invoice_number}}</span></td>
+@@ -65,35 +73,37 @@
+     <br><br><br>
+     <table class="inventory">
+         <!--<thead>-->
+-        <tr>
+-            <th><span>Sl No</span></th>
+-            <th><span>HS code</span></th>
+-            <th><span>Product</span></th>
+-            <th><span>Qty</span></th>
++          <tr>
++            <th class="header_style_4per"><span>Sl No</span></th>
++            <th class="header_style_10per"><span>HS code</span></th>
++            <th class="header_style_30per header_style_text_align_left" ><span>Product</span></th>
++            <th class="header_style_5per"><span>Qty</span></th>
+             <th><span>Rate /unit</span></th>
+-            <th><span>SGST</span><span data-prefix>%</span></th>
++            <th class="header_style_6per_igst"><span>SGST</span> <span data-prefix>%</span></th>
+             <th><span>SGST Amount</span></th>
+-            <th><span>CGST</span> <span data-prefix>%</span></th>
++            <th class="header_style_6per_igst"><span>CGST</span> <span data-prefix>%</span></th>
+             <th><span>CGST Amount</span></th>
+-            <th><span>Total </span></th>
++            <th class="header_style_20per"><span>Total </span></th>
+         </tr>
+-        <!--</thead>-->
++	<!--</thead>-->
+         <tbody>
+         {% for product in invoice_products %}
+-        <tr>
+-            <td><span>{{ forloop.counter }}</span></td>
+-            <td><span>{{ product.HSN_code }}</span></td>
+-            <td><span>{{ product.description }}</span></td>
+-            <td><span>{{ product.quantity }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
+-            <td><span>{{product.SGST_percentage}}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.SGST_amount|intcomma }}</span></td>
+-            <td><span>{{ product.CGST_percentage }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.CGST_amount|intcomma }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.total_amount|intcomma }}</span></td>
++         <tr>
++            <td class="header_style_4per"><span>{{ forloop.counter }}</span></td>
++            <td class="header_style_10per"><span>{{ product.HSN_code }}</span></td>
++            <td class="header_style_30per" style="text-align: left;" ><span>{{ product.description }}</span></td>
++            <td class="header_style_5per"><span>{{ product.quantity }}</span></td>
++            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
++            <td class="header_style_6per_igst"><span>{{product.SGST_percentage}}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.SGST_amount|intcomma }}</span></td>
++            <td class="header_style_6per_igst"><span>{{ product.CGST_percentage }}</span></td>
++            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.CGST_amount|intcomma }}</span></td>
++            <td class="header_style_20per" style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.total_amount|intcomma }}</span></td>
+         </tr>
+-        {% endfor %}
+-        {% for _ in "1234567890"|slice:":{{invoice_products|length}}" %}
++
++
++	{% endfor %}
++        {% for _ in "12345678"|slice:":{{invoice_products|length}}" %}
+         <tr>
+             <td><span> </span></td>
+             <td><span> </span></td>
+@@ -109,14 +119,22 @@
+ 
+         </tr>
+         {% endfor %}
++ 	<tr style="font-weight: bold;text-align: center">
++            <td colspan="5" style="text-align: center;"><span>  Grand Total</span></td>
++            <!--<td><span>  </span></td>-->
++            <td colspan="2"  style="text-align: right;"><span data-prefix>&#8377</span><span>{{ SGST_amount_total|intcomma }}</span></td>
++            <!--<td><span> </span></td>-->
++            <td colspan="2"><span data-prefix>&#8377</span><span>{{CGST_amount_total|intcomma }}</span></td>
++            <td class=""><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
++        </tr>
+         </tbody>
+     </table>
+-    <table class="balance">
++    <!--<table class="balance">
+         <tr>
+             <th><span>Total</span></th>
+             <td><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+         </tr>
+-    </table>
++    </table>-->
+ </article>
+ <aside>
+ 
+@@ -139,4 +157,4 @@
+ </aside>
+ 
+ </body>
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/wellnet/templates/admin/invoiceIGST.html b/wellnet/templates/admin/invoiceIGST.html
+index 6c7803c..b35923a 100644
+--- a/wellnet/templates/admin/invoiceIGST.html
++++ b/wellnet/templates/admin/invoiceIGST.html
+@@ -36,11 +36,15 @@
+     <h1>Recipient</h1>
+     <address>
+         To<br>
+-        <h4 style="font-weight: bold">{{ company_name }}</h4>
+-        c/o {{ owner_name }}<br>
++        <h4 style="font-weight: bold">{{ company_name_for_invoice }}</h4>
++        <h5 style="font-weight: bold">{{ company_name }}</h5>
++        <!--c/o {{ owner_name }}<br>-->
+ 
+         <div id="address" style="height: auto;">
+-            Address: {{ company_address }}
++            {{ company_address }}
++	    <span> {{u_city}}</span><br>
++	    <span>{{u_state}}</span>
++
+         </div>
+         <!--Orange Care Solutions (India) Pvt Ltd<br>-->
+         <!--Orange Terrace, 690/U, 15th Main<br>-->
+@@ -56,6 +60,11 @@
+             <th><span>City</span></th>
+             <td><span>{{city}}</span></td>
+         </tr>
++	<tr>
++            <th><span>Dealer Code</span></th>
++            <td><span>{{dealer_code}}</span></td>
++        </tr>
++
+         <tr>
+             <th><span>Invoice #</span></th>
+             <td><span>{{invoice_number}}</span></td>
+@@ -68,36 +77,31 @@
+     <br><br><br>
+     <table class="inventory">
+         <!--<thead>-->
+-        <tr>
+-            <th><span>Sl No</span></th>
+-            <th><span>HS code</span></th>
+-            <th><span>Product</span></th>
+-            <th><span>Qty</span></th>
++             <th class="header_style_4per"><span>Sl No</span></th>
++            <th class="header_style_10per"><span>HS code</span></th>
++            <th class="header_style_30per header_style_text_align_left"  ><span>Product</span></th>
++            <th class="header_style_5per"><span>Qty</span></th>
+             <th><span>Rate /unit</span></th>
+-            <th><span>IGST</span><span data-prefix>%</span></th>
++            <th class="header_style_6per_igst" ><span>IGST</span> <span data-prefix>%</span></th>
+             <th><span>IGST Amount</span></th>
+             <th><span>Total </span></th>
+         </tr>
+-        <!--</thead>-->
++	<!--</thead>-->
+         <tbody>
+         {% load mathfilters %}
+         {% for product in invoice_products %}
+-        <tr>
+-            <td><span>{{ forloop.counter }}</span></td>
+-            <td><span>{{product.HSN_code }}</span></td>
+-            <td><span>{{product.description }}</span></td>
+-            <td><span>{{product.quantity }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
+-            <td><span>{{product.IGST_percentage }}</span></td>
+-            <td><span
+-                    data-prefix>&#8377</span><span>{{ product.IGST_amount }}</span>
+-            </td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.total_amount_igst|intcomma }}</span></td>
+-
+-
++         <tr>
++            <td class="header_style_4per"><span>{{ forloop.counter }}</span></td>
++            <td class="header_style_10per"><span>{{product.HSN_code }}</span></td>
++            <td class="header_style_30per" style="text-align: left" ><span>{{product.description }}</span></td>
++            <td class="header_style_5per"><span>{{product.quantity }}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
++            <td class="header_style_6per_igst" ><span>{{product.IGST_percentage }}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.IGST_amount }}</span> </td>
++            <td class="header_style_20per" style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.total_amount_igst|intcomma }}</span></td>
+         </tr>
+-        {% endfor %}
+-        {% for _ in "1234567890"|slice:":{{invoice_products|length}}" %}
++	{% endfor %}
++        {% for _ in "12345678"|slice:":{{invoice_products|length}}" %}
+         <tr>
+             <td><span> </span></td>
+             <td><span> </span></td>
+@@ -111,14 +115,21 @@
+ 
+         </tr>
+         {% endfor %}
++ 	<tr style="font-weight: bold">
++            <td colspan="5" style="text-align: center"><span><b>Grand Total</b></span></td>
++            <!--<td><span>  </span></td>-->
++            <!--<td><span> </span></td>-->
++               <td colspan="2" style="text-align: right" > <span data-prefix>&#8377</span><span>{{IGST_amount_total|intcomma }}</span></b></td>
++            <td style="text-align: right"><b><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></b></td>
++        </tr>
+         </tbody>
+     </table>
+-    <table class="balance">
++    <!--<table class="balance">
+         <tr>
+             <th><span>Grand Total</span></th>
+             <td><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+         </tr>
+-    </table>
++    </table>-->
+ </article>
+ <aside>
+ 
+@@ -142,4 +153,4 @@
+ </aside>
+ 
+ </body>
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/wellnet/templates/admin/receiptGST.html b/wellnet/templates/admin/receiptGST.html
+index 9d751d5..02b3930 100644
+--- a/wellnet/templates/admin/receiptGST.html
++++ b/wellnet/templates/admin/receiptGST.html
+@@ -31,10 +31,13 @@
+     <h1>Recipient</h1>
+     <address>
+         Received From:<br>
+-        <h4 style="font-weight: bold">{{ company_name }}</h4>
+-        c/o {{ owner_name }}<br>
++        <h4 style="font-weight: bold">{{ company_name_for_invoice }}</h4>
++        <h5 style="font-weight: bold">{{ company_name }}</h5>
+         <div id="address" style="height: auto;">
+-            Address: {{ company_address }}
++            {{ company_address }}
++            <span>{{u_city}}</span><br>
++	    <span>{{u_state}}</span>
++
+         </div>
+     </address>
+     <table class="meta">
+@@ -68,6 +71,11 @@
+             <td><span>{{bank_name}}</span></td>
+         </tr>
+          {% endif %}
++	<tr>
++            <th><span>Dealer Code</span></th>
++            <td><span>{{dealer_code}}</span></td>
++        </tr>
++
+         <tr>
+             <th><span>Receipt #</span></th>
+             <td><span>{{invoice_number}}</span></td>
+@@ -80,38 +88,39 @@
+     <br><br><br>
+     <table class="inventory">
+         <!--<thead>-->
+-        <tr>
+-            <th><span>Sl No</span></th>
+-            <th><span>HS code</span></th>
+-            <th><span>Product</span></th>
+-            <th><span>Qty</span></th>
++  	<tr>
++            <th class="header_style_4per"><span>Sl No</span></th>
++            <th class="header_style_10per"><span>HS code</span></th>
++            <th class="header_style_30per header_style_text_align_left" ><span>Product</span></th>
++            <th class="header_style_5per"><span>Qty</span></th>
+             <th><span>Rate /unit</span></th>
+-            <th><span>SGST</span><span data-prefix>%</span></th>
++            <th class="header_style_6per_igst"><span>SGST</span> <span data-prefix>%</span></th>
+             <th><span>SGST Amount</span></th>
+-            <th><span>CGST</span> <span data-prefix>%</span></th>
++            <th class="header_style_6per_igst"><span>CGST</span> <span data-prefix>%</span></th>
+             <th><span>CGST Amount</span></th>
+-            <th><span>Total </span></th>
+-        </tr>
+-        <!--</thead>-->
++            <th class="header_style_20per"><span>Total </span></th>
++        </tr>        
++	<!--</thead>-->
+         <tbody>
+         {% load mathfilters %}
+         {% for product in invoice_products %}
+-        <tr>
+-            <td><span>{{ forloop.counter }}</span></td>
+-            <td><span>{{product.HSN_code }}</span></td>
+-            <td><span>{{product.description }}</span></td>
+-            <td><span>{{product.quantity }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
+-            <td><span>{{product.SGST_percentage}}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.SGST_amount|intcomma }}</span></td>
+-            <td><span>{{ product.CGST_percentage }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.CGST_amount|intcomma }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.total_amount|intcomma }}</span></td>
++        
++	 <tr>
++            <td class="header_style_4per"><span>{{ forloop.counter }}</span></td>
++            <td class="header_style_10per"><span>{{ product.HSN_code }}</span></td>
++            <td class="header_style_30per" style="text-align: left;" ><span>{{ product.description }}</span></td>
++            <td class="header_style_5per"><span>{{ product.quantity }}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
++            <td class="header_style_6per_igst"><span>{{product.SGST_percentage}}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.SGST_amount|intcomma }}</span></td>
++            <td class="header_style_6per_igst"  ><span>{{ product.CGST_percentage }}</span></td>
++            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.CGST_amount|intcomma }}</span></td>
++            <td class="header_style_20per"style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.total_amount|intcomma }}</span></td>
++        </tr>
+ 
+ 
+-        </tr>
+-        {% endfor %}
+-        {% for _ in "1234567890"|slice:":{{invoice_products|length}}" %}
++	{% endfor %}
++        {% for _ in "12345678"|slice:":{{invoice_products|length}}" %}
+         <tr>
+             <td><span> </span></td>
+             <td><span> </span></td>
+@@ -127,14 +136,22 @@
+ 
+         </tr>
+         {% endfor %}
++ <tr style="font-weight: bold;text-align: center">
++            <td colspan="5" style="text-align: center;"><span>  Grand Total</span></td>
++            <!--<td><span>  </span></td>-->
++            <td colspan="2"  style="text-align: right;"><span data-prefix>&#8377</span><span>{{ SGST_amount_total|intcomma }}</span></td>
++            <!--<td><span> </span></td>-->
++            <td colspan="2" style="text-align: right" ><span data-prefix>&#8377</span><span>{{CGST_amount_total|intcomma }}</span></td>
++            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
++        </tr>
+         </tbody>
+     </table>
+-    <table class="balance">
++    <!--<table class="balance">
+         <tr>
+             <th><span>Grand Total</span></th>
+             <td><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+         </tr>
+-    </table>
++    </table>-->
+ </article>
+ <aside>
+ 
+@@ -161,4 +178,4 @@
+ 
+ 
+ </body>
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/wellnet/templates/admin/receiptIGST.html b/wellnet/templates/admin/receiptIGST.html
+index 8e33f8d..e66b750 100644
+--- a/wellnet/templates/admin/receiptIGST.html
++++ b/wellnet/templates/admin/receiptIGST.html
+@@ -32,11 +32,16 @@
+     <h1>Recipient</h1>
+     <address>
+         Received From :<br>
+-        <p>{{ company_name }}</p>
+-        <p>c/o {{ owner_name }}</p>
++        <h4 style="font-weight: bold">{{ company_name_for_invoice }}</h4>
++        
++        <h4 style="font-weight: bold">{{company_name }}</h4>
++        <!--<p>c/o {{ owner_name }}</p>-->
+ 
+         <div id="address" style="height: auto;">
+-            Address: {{ company_address }}
++            {{ company_address }}
++	    <span>{{u_city}}</span><br>
++	    <span>{{u_state}}</span>
++
+         </div>
+         <!--Orange Care Solutions (India) Pvt Ltd<br>-->
+         <!--Orange Terrace, 690/U, 15th Main<br>-->
+@@ -74,6 +79,11 @@
+             <td><span>{{bank_name}}</span></td>
+         </tr>
+          {% endif %}
++	<tr>
++            <th><span>Dealer Code</span></th>
++            <td><span>{{dealer_code}}</span></td>
++        </tr>
++
+         <tr>
+             <th><span>Receipt #</span></th>
+             <td><span>{{invoice_number}}</span></td>
+@@ -86,34 +96,32 @@
+     <br><br><br>
+     <table class="inventory">
+         <!--<thead>-->
+-        <tr>
+-            <th><span>Sl No</span></th>
+-            <th><span>HS code</span></th>
+-            <th><span>Product</span></th>
+-            <th><span>Qty</span></th>
++             <th class="header_style_4per"><span>Sl No</span></th>
++            <th class="header_style_10per"><span>HS code</span></th>
++            <th class="header_style_30per header_style_text_align_left"  ><span>Product</span></th>
++            <th class="header_style_5per"><span>Qty</span></th>
+             <th><span>Rate /unit</span></th>
+-            <th><span>IGST </span> <span data-prefix>%</span></th>
++            <th class="header_style_6per_igst" ><span>IGST</span> <span data-prefix>%</span></th>
+             <th><span>IGST Amount</span></th>
+             <th><span>Total </span></th>
+         </tr>
+-        <!--</thead>-->
++	<!--</thead>-->
+         <tbody>
+         {% load mathfilters %}
+         {% for product in invoice_products %}
+-        <tr>
+-            <td><span>{{ forloop.counter }}</span></td>
+-            <td><span>{{product.HSN_code}}</span></td>
+-            <td><span>{{product.description }}</span></td>
+-            <td><span>{{product.quantity }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
+-            <td><span>{{product.IGST_percentage }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.IGST_amount }}</span></td>
+-            <td><span data-prefix>&#8377</span><span>{{ product.total_amount_igst|intcomma }}</span></td>
+-
+-
++         <tr>
++            <td class="header_style_4per"><span>{{ forloop.counter }}</span></td>
++            <td class="header_style_10per"><span>{{product.HSN_code }}</span></td>
++            <td class="header_style_30per" style="text-align: left" ><span>{{product.description }}</span></td>
++            <td class="header_style_5per"><span>{{product.quantity }}</span></td>
++            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
++            <td class="header_style_6per_igst"><span>{{product.IGST_percentage }}</span></td>
++            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.IGST_amount }}</span> </td>
++            <td class="header_style_20per" style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.total_amount_igst|intcomma }}</span></td>
+         </tr>
+-        {% endfor %}
+-        {% for _ in "1234567890"|slice:":{{invoice_products|length}}" %}
++	
++	{% endfor %}
++        {% for _ in "12345678"|slice:":{{invoice_products|length}}" %}
+         <tr>
+             <td><span> </span></td>
+             <td><span> </span></td>
+@@ -127,14 +135,21 @@
+ 
+         </tr>
+         {% endfor %}
++	 <tr style="font-weight: bold">
++            <td colspan="5" style="text-align: center"><span><b>Grand Total</b></span></td>
++            <!--<td><span>  </span></td>-->
++            <!--<td><span> </span></td>-->
++               <td colspan="2" style="text-align: right"> <span data-prefix>&#8377</span><span>{{IGST_amount_total|intcomma }}</span></b></td>
++            <td style="text-align: right"><b><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></b></td>
++        </tr>
+         </tbody>
+     </table>
+-    <table class="balance">
++   <!-- <table class="balance">
+         <tr>
+             <th><span>Grand Total</span></th>
+             <td><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+         </tr>
+-    </table>
++    </table>-->
+ </article>
+ <aside>
+ 
+@@ -156,4 +171,4 @@
+     </div>
+ 
+ </body>
+-</html>
+\ No newline at end of file
++</html>
+diff --git a/wellnet/wellnet/settings.py b/wellnet/wellnet/settings.py
+index 4c83e8e..3d4ea89 100755
+--- a/wellnet/wellnet/settings.py
++++ b/wellnet/wellnet/settings.py
+@@ -24,10 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ SECRET_KEY = '*a^ymn+15j@u=p3d2l47q*2(qgtytz#+tx+vwia*f-+-^ronus'
+ 
+ # SECURITY WARNING: don't run with debug turned on in production!
+-DEBUG = True
+-DEBUG1 = False
++DEBUG = False
+ 
+-ALLOWED_HOSTS = ['localhost','127.0.0.1','http://127.0.0.1:8000'
++ALLOWED_HOSTS = ['localhost','127.0.0.1',
+                                  '.wellnetservices.com', 'wellnetservices.com',
+             'code.jquery.com','.googleapis.com','http://sales.wellnetservices.com',]
+ 
+@@ -103,7 +102,7 @@ BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
+ LOGIN_URL = '/admin/login'
+ # Database
+ # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+-if DEBUG1:
++if DEBUG:
+     DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.sqlite3',
+@@ -116,7 +115,7 @@ else:
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'wellnyg7_wellnet_services',
+             'USER': 'root',
+-            'PASSWORD': 'Fork90909',
++            'PASSWORD': 'alf@3$5',
+             'HOST': '127.0.0.1',
+             'PORT': '3306',
+         }
+@@ -226,8 +225,6 @@ DATETIME_INPUT_FORMATS = ('%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M', '%d/%m/%Y',
+                           '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%d')
+ if not DEBUG:
+     WKHTMLTOPDF_CMD = '/opt/wellnet_server/wkhtmltopdf.sh'
+-else :
+-    WKHTMLTOPDF_CMD = '/opt/wellnet/wkhtmltopdf.sh'
+ 
+ EKONNECT_ACCOUNT_ID = "2d32469b-e4b7-4d51-934d-fcbd4b55c368"
+ EKONNECT_NEW_BOOKING_TEMPLATE_ID = "24e4bc65-c32a-4ff2-ac9b-5ced75df0d1a"

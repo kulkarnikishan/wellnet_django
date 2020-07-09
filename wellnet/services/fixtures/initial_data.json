@@ -1,0 +1,483 @@
+[{
+		"fields" : {
+			"info" : 1
+		},
+		"model" : "services.moreinfo",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"info" : 2
+		},
+		"model" : "services.moreinfo",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"info" : 3
+		},
+		"model" : "services.moreinfo",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"info" : 4
+		},
+		"model" : "services.moreinfo",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"info" : 5
+		},
+		"model" : "services.moreinfo",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"name" : "Karnataka"
+		},
+		"model" : "services.state",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Bangalore"
+		},
+		"model" : "services.city",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Mysore"
+		},
+		"model" : "services.city",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Mangalore"
+		},
+		"model" : "services.city",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Hubli"
+		},
+		"model" : "services.city",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Shimoga"
+		},
+		"model" : "services.city",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"state" : 1,
+			"name" : "Davangere"
+		},
+		"model" : "services.city",
+		"pk" : 6
+	}, {
+		"fields" : {
+			"description" : "Pest Control"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"description" : "House Keeping"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"description" : "Security Services"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"description" : "AC maintenance"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"description" : "Office supply"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"description" : "Car Wash centre"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 6
+	}, {
+		"fields" : {
+			"description" : "Car Dealers"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 7
+	}, {
+		"fields" : {
+			"description" : "Wheel alignment centre"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 8
+	}, {
+		"fields" : {
+			"description" : "Petrol pumps"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 9
+	}, {
+		"fields" : {
+			"description" : "Emission test centre"
+		},
+		"model" : "services.channelpartnersegment",
+		"pk" : 10
+	}, {
+		"fields" : {
+			"description" : "Appartment"
+		},
+		"model" : "services.customercategory",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"description" : "Corporates"
+		},
+		"model" : "services.customercategory",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"description" : "Retail outlets"
+		},
+		"model" : "services.customercategory",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"description" : "Hotel/Restaurant"
+		},
+		"model" : "services.customercategory",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"description" : "Vehicles"
+		},
+		"model" : "services.customercategory",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"description" : "Effective"
+		},
+		"model" : "services.leadstatus",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"description" : "Ineffective"
+		},
+		"model" : "services.leadstatus",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"description" : "Closed"
+		},
+		"model" : "services.leadstatus",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"description" : "Postponed"
+		},
+		"model" : "services.leadstatus",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"status" : 1,
+			"description" : "In Progress"
+		},
+		"model" : "services.statusreason",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"status" : 2,
+			"description" : "Not interested"
+		},
+		"model" : "services.statusreason",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"status" : 2,
+			"description" : "Cannot afford"
+		},
+		"model" : "services.statusreason",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"status" : 2,
+			"description" : "Profit too low"
+		},
+		"model" : "services.statusreason",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"status" : 2,
+			"description" : "Less clients"
+		},
+		"model" : "services.statusreason",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"status" : 2,
+			"description" : "No manpower"
+		},
+		"model" : "services.statusreason",
+		"pk" : 6
+	}, {
+		"fields" : {
+			"status" : 3,
+			"description" : "On Board"
+		},
+		"model" : "services.statusreason",
+		"pk" : 7
+	}, {
+		"fields" : {
+			"status" : 4,
+			"description" : "Next appointment date"
+		},
+		"model" : "services.statusreason",
+		"pk" : 8
+	}, {
+		"fields" : {
+			"status" : 4,
+			"description" : "Require more details"
+		},
+		"model" : "services.statusreason",
+		"pk" : 9
+	}, {
+		"fields" : {
+			"description" : "Cheque"
+		},
+		"model" : "services.paymenttype",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"description" : "DD"
+		},
+		"model" : "services.paymenttype",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"description" : "Online Transfer"
+		},
+		"model" : "services.paymenttype",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"description" : "Cash"
+		},
+		"model" : "services.paymenttype",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"active" : true,
+			"type" : 2,
+			"description" : "Bactakleen",
+			"HSN_code" : "123"
+		},
+		"model" : "services.product",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"active" : true,
+			"type" : 1,
+			"description" : "Germbuster",
+			"HSN_code" : "123"
+		},
+		"model" : "services.product",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : null,
+			"active" : true,
+			"segment" : 1,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : null,
+			"active" : true,
+			"segment" : 2,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : null,
+			"active" : true,
+			"segment" : 3,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : null,
+			"active" : true,
+			"segment" : 4,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : 1,
+			"active" : true,
+			"segment" : 5,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 5
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : 2,
+			"active" : true,
+			"segment" : 5,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 6
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : 3,
+			"active" : true,
+			"segment" : 5,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 7
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : 4,
+			"active" : true,
+			"segment" : 5,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 8
+	}, {
+		"fields" : {
+			"product" : 1,
+			"vehicle_category" : 5,
+			"active" : true,
+			"segment" : 5,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 9
+	}, {
+		"fields" : {
+			"product" : 2,
+			"vehicle_category" : null,
+			"active" : true,
+			"segment" : null,
+			"base_price" : "500.00"
+		},
+		"model" : "services.productsegmentprice",
+		"pk" : 10
+	}, {
+		"fields" : {
+			"active" : true,
+			"product" : 1,
+			"user_group" : 3,
+			"base_price" : "10.00"
+		},
+		"model" : "services.productprice",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"active" : true,
+			"product" : 1,
+			"user_group" : 4,
+			"base_price" : "8.00"
+		},
+		"model" : "services.productprice",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"active" : true,
+			"product" : 2,
+			"user_group" : 3,
+			"base_price" : "500.00"
+		},
+		"model" : "services.productprice",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"active" : true,
+			"product" : 2,
+			"user_group" : 4,
+			"base_price" : "450.00"
+		},
+		"model" : "services.productprice",
+		"pk" : 4
+	}, {
+		"fields" : {
+			"SGST_percentage" : "14.50",
+			"active" : true,
+			"product" : 1,
+			"end_date" : "2016-03-21",
+			"CGST_percentage" : "4.00"
+		},
+		"model" : "services.tax",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"SGST_percentage" : "0.00",
+			"active" : true,
+			"product" : 2,
+			"end_date" : "2016-03-21",
+			"CGST_percentage" : "4.00"
+		},
+		"model" : "services.tax",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"name" : "SuperAdmin",
+			"permissions" : []
+		},
+		"model" : "auth.group",
+		"pk" : 1
+	}, {
+		"fields" : {
+			"name" : "EmployeeGroup",
+			"permissions" : []
+		},
+		"model" : "auth.group",
+		"pk" : 2
+	}, {
+		"fields" : {
+			"name" : "ChannelPartnerGroup",
+			"permissions" : []
+		},
+		"model" : "auth.group",
+		"pk" : 3
+	}, {
+		"fields" : {
+			"name" : "SubDealer",
+			"permissions" : []
+		},
+		"model" : "auth.group",
+		"pk" : 4
+	}
+]

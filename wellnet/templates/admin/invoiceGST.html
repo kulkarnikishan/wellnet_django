@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static from staticfiles %}
+    <link rel='stylesheet' type='text/css' href="{% static "css/style.css" %}" />
+    <link rel='stylesheet' type='text/css' href="{% static "css/print.css" %}" />
+    <link rel='stylesheet' type='text/css' href="{% static "css/receipt.css" %}" />
+
+    {% load humanize %}
+    <title>{{title}}</title>
+
+</head>
+<body style="border: 1px solid;">
+
+<header>
+     <div style="font-size:x-large">
+    {% if is_pro_forma  %}
+    <h1>Pro Forma Invoice</h1>
+    {% else %}
+    <h1>Invoice</h1>
+    {% endif %}
+     </div>
+    <address style="font-weight: 200">
+        <h4 style="font-weight: bold">Wellnet Services Pvt Ltd</h4><br>
+        #1,1st Floor, Sri Prem Prasad Complex,<br>
+        New BEL Road, RMV extension<br>
+        Bangalore 560094<br>
+        Karnataka, India<br>
+        Phone: 080-23417262, 9900544331<br>
+        Website: www.wellnetservices.com<br>
+        Email ID: info@wellnetservices.com<br>
+    </address>
+    <span style="margin-right: 60px;margin-top: 10px"><img width="200" height="200" src="{% static "images/new_logo.png" %}" alt="logo"  ></span>
+
+</header>
+<article>
+    <h1>Recipient</h1>
+    <address>
+        To<br>
+        <h4 style="font-weight: bold">{{ company_name_for_invoice }}</h4>
+        <h5 style="font-weight: bold">{{ company_name }}</h5>
+
+        <!--c/o {{ owner_name }}<br>-->
+        <div id="address" style="height: auto; width:300px;">
+            {{ company_address }}
+	    <span>{{u_city}}</span><br>
+        <span>Pin Code:{{pin_code}}</span><br>
+	    <span>{{u_state}}</span>
+        </div>
+    </address>
+    <table class="meta">
+        <tr>
+            <th><span>Date</span></th>
+            <td><span>{{invoice_date}}</span></td>
+        </tr>
+        <tr>
+            <th><span>City</span></th>
+            <td><span>{{city}}</span></td>
+        </tr>
+	<tr>
+            <th><span>Dealer Code</span></th>
+            <td><span>{{dealer_code}}</span></td>
+        </tr>
+
+        <tr>
+            <th><span>Invoice </span></th>
+            <td><span>{{invoice_number}}</span></td>
+        </tr>
+        <tr>
+            <th><span>GSTIN </span></th>
+            <td><span>{{registration_number}}</span></td>
+        </tr>
+        <tr>
+            <th><span>PO Number </span></th>
+            <td><span>{{purchase_order_no}}</span></td>
+        </tr>
+    </table>
+    <br><br><br>
+    <table class="inventory">
+        <!--<thead>-->
+          <tr>
+            <th class="header_style_4per"><span>Sl No</span></th>
+            <th class="header_style_10per"><span>HS code</span></th>
+            <th class="header_style_30per header_style_text_align_left" ><span>Product</span></th>
+            <th class="header_style_5per"><span>Qty</span></th>
+            <th><span>Rate /unit</span></th>
+            <th class="header_style_6per_igst"><span>SGST</span> <span data-prefix>%</span></th>
+            <th><span>SGST Amount</span></th>
+            <th class="header_style_6per_igst"><span>CGST</span> <span data-prefix>%</span></th>
+            <th><span>CGST Amount</span></th>
+            <th class="header_style_20per"><span>Total </span></th>
+        </tr>
+	<!--</thead>-->
+        <tbody>
+        {% for product in invoice_products %}
+         <tr>
+            <td class="header_style_4per"><span>{{ forloop.counter }}</span></td>
+            <td class="header_style_10per"><span>{{ product.HSN_code }}</span></td>
+            <td class="header_style_30per" style="text-align: left;" ><span>{{ product.description }}</span></td>
+            <td class="header_style_5per"><span>{{ product.quantity }}</span></td>
+            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.unit_cost }}</span></td>
+            <td class="header_style_6per_igst"><span>{{product.SGST_percentage}}</span></td>
+            <td style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.SGST_amount|intcomma }}</span></td>
+            <td class="header_style_6per_igst"><span>{{ product.CGST_percentage }}</span></td>
+            <td style="text-align: right"><span data-prefix>&#8377</span><span>{{ product.CGST_amount|intcomma }}</span></td>
+            <td class="header_style_20per" style="text-align: right" ><span data-prefix>&#8377</span><span>{{ product.total_amount|intcomma }}</span></td>
+        </tr>
+
+
+	{% endfor %}
+        {% for _ in "12345678"|slice:":{{invoice_products|length}}" %}
+        <tr>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <td><span> </span></td>
+            <!--second entry-->
+
+        </tr>
+        {% endfor %}
+ 	<tr style="font-weight: bold;text-align: center">
+            <td colspan="5" style="text-align: center;"><span>  Grand Total</span></td>
+            <!--<td><span>  </span></td>-->
+            <td colspan="2"  style="text-align: right;"><span data-prefix>&#8377</span><span>{{ SGST_amount_total|intcomma }}</span></td>
+            <!--<td><span> </span></td>-->
+            <td colspan="2"><span data-prefix>&#8377</span><span>{{CGST_amount_total|intcomma }}</span></td>
+            <td class=""><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <!--<table class="balance">
+        <tr>
+            <th><span>Total</span></th>
+            <td><span data-prefix>&#8377</span><span>{{ grand_total|intcomma }}</span></td>
+        </tr>
+    </table>-->
+</article>
+<aside>
+
+    <h1><span style="font-weight: bold">Thank you for your business</span></h1>
+    <br>
+    <div>
+  <p style="font-weight: bold">GSTIN Number of Wellnet Services Pvt Ltd: 29AABCW6546R1ZD</p>
+        <p><br>
+            Account Details: Wellnet Services Pvt Ltd </p>
+        <p> Bank: Axis Bank Ltd</p>
+        <p> Bank Branch: New BEL Road BAN KT</p>
+        <p>Account No: 915020028482771</p>
+        <p>IFSC Code: UTIB0002596</p>
+    </div>
+    <div style="float: right;text-align: center">
+        <p>For Wellnet Services Pvt Ltd</p><br>
+        <span> <img width="100" height="100" src="{% static "images/seal_sign.png"%}" alt="logo"  ></span>
+        <p>Authorised Signatory</p>
+    </div>
+</aside>
+
+</body>
+</html>

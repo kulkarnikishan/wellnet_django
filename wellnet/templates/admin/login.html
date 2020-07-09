@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-gb">
+<!--<![endif]-->
+<head>
+<title>WellNet Login</title>
+<meta charset="utf-8">
+<!-- Meta -->
+<meta name="keywords" content="" />
+<meta name="author" content="">
+<meta name="robots" content="" />
+<meta name="description" content="" />
+
+<!-- this styles only adds some repairs on idevices  -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="http://wellnetservices.com/images/favicon.png">
+
+<!-- Google fonts - witch you want to use - (rest you can just remove) -->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900' rel='stylesheet' type='text/css'>
+
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+<!-- ######### CSS STYLES ######### -->
+
+<link rel="stylesheet" href="http://wellnetservices.com/css/reset.css" type="text/css" />
+<link rel="stylesheet" href="http://wellnetservices.com/css/style.css" type="text/css" />
+<link rel="stylesheet" href="http://sales.wellnetservices.com/static/font-awesome/css/font-awesome.min.css">
+
+<!-- responsive devices styles -->
+<link rel="stylesheet" media="screen" href="http://wellnetservices.com/css/responsive-leyouts.css" type="text/css" />
+
+<!-- mega menu -->
+<link href="http://wellnetservices.com/js/mainmenu/sticky.css" rel="stylesheet">
+<link href="http://wellnetservices.com/js/mainmenu/bootstrap.min.css" rel="stylesheet">
+<link href="http://wellnetservices.com/js/mainmenu/demo.css" rel="stylesheet">
+<link href="http://wellnetservices.com/js/mainmenu/menu.css" rel="stylesheet">
+
+<!-- simple line icons -->
+<link rel="stylesheet" type="text/css" href="http://wellnetservices.com/css/Simple-Line-Icons-Webfont/simple-line-icons.css" media="screen" />
+
+<!-- forms -->
+<link rel="stylesheet" href="http://wellnetservices.com/js/form/sky-forms.css" type="text/css" media="all">
+<link rel="stylesheet" href="http://wellnetservices.com/css/colors/green.css" />
+</head>
+
+<body>
+{% block content %}
+<div class="site_wrapper">
+  <header id="header"> 
+    
+    <!-- Top header bar -->
+    <div id="topHeader">
+      <div class="wrapper">
+        <div class="top_nav">
+          <div class="container">
+            <div class="left"> <a href="mailto:info@wellnetservices.com"><i class="fa fa-envelope-o"></i> &nbsp;info@wellnetservices.com</a></div>
+            <div class="right">
+              <ul>
+                <li><a href="https://www.facebook.com/bactakleenindia.india" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="https://twitter.com/BactakleenINDIA" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="mailto:bactakleenindia@gmail.com"><i class="fa fa-google-plus"></i></a></li>
+                <li class="last"><a href="https://in.linkedin.com/in/bactakleen-india-2a48b111a" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+            </div>
+            <!-- end right social links --> 
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end top navigation -->
+    
+    <div id="trueHeader">
+      <div class="wrapper">
+        <div class="container"> 
+          
+          <!-- Logo -->
+          <div class="logo"><a href="http://wellnetservices.com" id="logo"></a></div>
+          
+          <!-- Menu -->
+          <div class="menu_main">
+            <div class="navbar yamm navbar-default">
+              <div class="container">
+                <div class="navbar-header">
+                  <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse" data-target="#navbar-collapse-1"  > <span>Menu</span>
+                    <button type="button" > <i class="fa fa-bars"></i></button>
+                  </div>
+                </div>
+                <div id="navbar-collapse-1" class="navbar-collapse collapse pull-right">
+                  <nav>
+                  <ul class="nav navbar-nav">
+                    <li class="dropdown"> <a href="http://wellnetservices.com/" class="dropdown-toggle">Home</a></li>
+                    <li class="dropdown"> <a href="#" class="dropdown-toggle">Our Offers</a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="http://wellnetservices.com/products.html">Products</a> </li>
+                        <!--<li><a href="http://wellnetservices.com/services.html">Book a Service</a> </li>-->
+                      </ul>
+                    </li>
+                    <li class="dropdown"> <a href="http://wellnetservices.com/about.html" class="dropdown-toggle">About</a></li>
+                    <li class="dropdown"> <a href="http://wellnetservices.com/contact.html" class="dropdown-toggle">Contact</a></li>
+					<li class="dropdown"> <a href="http://wellnetservices.com/register.html" class="dropdown-toggle">Join Us</a></li>
+					<li class="dropdown"> <a href="http://sales.wellnetservices.com/admin/" class="dropdown-toggle active">Login</a></li>
+                  </ul></nav>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end menu --> 
+          
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="clearfix"></div>
+  
+  <div class="section_holder18">
+    <div class="container">
+      <div class="pagetitle">
+        <h3>Login</h3>
+      </div>
+      <div class="pagenation">&nbsp;<a href="http://wellnetservices.com">Home</a> <i>/</i> Login</div>
+    </div>
+  </div>
+  <!--end pagenation-->
+  <div class="clearfix"></div>
+
+  <div class="section_holder27">
+    <div class="container">
+      <div class="login_form one_half" style="float: none !important;">		
+			<form action="{{ app_path }}" method="post" id="sky-form" class="sky-form">{% csrf_token %}
+				<header>Login to WellNet</header>
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                    <div class="error-box alert" style="padding: 10px;">
+                        <span><i class="fa fa-exclamation-triangle"></i> &nbsp; &nbsp;{{ error }}</span>
+                    </div>
+                    {% endfor %}
+                  {% endif %}
+				<fieldset>					
+					<section>
+						<div class="row">
+							<label class="label col col-4">Username</label>
+							<div class="col col-8">
+								<label class="input">
+									<i class="icon-append icon-user"></i>
+									<input type="text" name="username" required="true">
+								</label>
+							</div>
+						</div>
+					</section>
+					
+					<section>
+						<div class="row">
+							<label class="label col col-4">Password</label>
+							<div class="col col-8">
+								<label class="input">
+									<i class="icon-append icon-lock"></i>
+									<input type="password" name="password" required="true">
+                                    <input type="hidden" name="this_is_the_login_form" value="1" />
+                                    <input type="hidden" name="next" value="{{ next }}" />
+								</label>
+                                {% url 'admin_password_reset' as password_reset_url %}
+                                {% if password_reset_url %}
+								<div class="note"><a href="{{ password_reset_url }}" class="modal-opener">Forgotten your password or username?</a></div>
+                                {% endif %}
+							</div>
+						</div>
+					</section>
+				</fieldset>
+				<footer>
+					<div class="fright">
+                    <a href="http://wellnetservices.com/register.html" class="button button-secondary eight">Join Us</a>
+                    <button type="submit" class="button eight">Log in</button>
+                    </div>
+					
+				</footer>
+			</form>			
+		</div>
+		<form action="demo-recovery.php" id="sky-form2" class="sky-form sky-form-modal">
+			<header>Password recovery</header>
+			
+			<fieldset>					
+				<section>
+					<label class="label">E-mail</label>
+					<label class="input">
+						<i class="icon-append icon-user"></i>
+						<input type="email" name="email" id="email">
+					</label>
+				</section>
+			</fieldset>
+			
+			<footer>
+				<button type="submit" name="submit" class="button">Submit</button>
+				<a href="#" class="button button-secondary modal-closer">Close</a>
+			</footer>
+				
+			<div class="message">
+				<i class="icon-ok"></i>
+				<p>Your request successfully sent!<br><a href="#" class="modal-closer">Close window</a></p>
+			</div>
+		</form>
+
+</div>
+  </div>
+  <!--end section 22-->
+  <div class="clearfix"></div>
+
+  <div class="punchtext">
+    <div class="container">
+      <div class="text">
+        <h4 class="white margin_top1">Get Excellent Unique Products that adds value to your life with WellNet</h4>
+      </div>
+      <div class="but"> <a href="#" class="readmore_but2">Buy now!</a> </div>
+    </div>
+  </div>
+  <!--end punch text-->
+  
+  <div class="clearfix"></div>
+  <div class="footer1">
+    <div class="social_links two">
+      <div class="container">
+        <ul class="social_icons">
+          <li><a href="https://www.facebook.com/bactakleenindia.india"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="https://twitter.com/BactakleenINDIA"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="mailto:bactakleenindia@gmail.com"><i class="fa fa-google-plus"></i></a></li>
+          <li><a href="https://in.linkedin.com/in/bactakleen-india-2a48b111a"><i class="fa fa-linkedin"></i></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <div class="one_fourth">
+        <h4 class="white">About WellNet</h4>
+        <div class="footer_title_line"></div>
+        <ul class="quick_links">
+          <li><a href="http://wellnetservices.com/about.html">About US</a></li>
+		  <li><a href="http://wellnetservices.com/about.html#ourstory">Our Story</a></li>
+          <li><a href="http://wellnetservices.com/about.html#meetourteam">Meet Our Team</a></li>
+          <li><a href="http://wellnetservices.com/contact.html">Contact US</a></li>
+        </ul>
+      </div>
+      <!--end about WellNet-->
+      
+      <div class="one_fourth">
+        <h4 class="white">Products & Services</h4>
+        <div class="footer_title_line"></div>
+        <ul class="quick_links">
+          <li><a href="http://wellnetservices.com/products.html">Backtakleen</a></li>
+          <li><a href="http://wellnetservices.com/products.html?action=germbuster">Germbuster</a></li>
+          <!--<li><a href="services.html">Book a Service</a></li>-->
+		  <li><a href="http://wellnetservices.com/product-backtakleen-faqs.html">FAQs</a></li>
+        </ul>
+      </div>
+      <!--end products and services-->
+      
+      <div class="one_fourth">
+        <h4 class="white">News &amp; Media</h4>
+        <div class="footer_title_line"></div>
+        <ul class="quick_links">
+          <li><a href="http://wellnetservices.com/product-backtakleen-health-tips.html">Health Tips</a></li>
+          <li><a href="http://wellnetservices.com/privacy-policy.html">Privacy Policy</a></li>
+		  <li><a href="http://wellnetservices.com/terms-n-conditions.html">Terms &amp; Conditions</a></li>
+		  <li><a href="#">Certification</a></li>
+        </ul>
+      </div>
+      <!--end legal-->
+      
+      <div class="one_fourth last">
+        <h4 class="white">Get Connected</h4>
+        <div class="footer_title_line"></div>
+        <ul class="quick_links">
+          <li><a href="http://wellnetservices.com/contact.html">Contact Us</a></li>
+		  <li><a href="http://wellnetservices.com/register.html?action=register">Join Us</a></li>
+		  <li><a href="http://wellnetservices.com/register.html?action=meet">Meet our Representative</a></li>
+		  <li><a href="http://wellnetservices.com/register.html?action=refer">Refer</a></li>
+        </ul>
+      </div>
+      <!--end need help--> 
+    </div>
+  </div>
+  <!--end footer-->
+  <div class="copyrights">
+    <div class="container"> <span>Copyright © 2015 wellnetservices.com All rights reserved.</span><span class="text2">Design and developed by <a href="http://forktechnologies.com" style="color: #3fc35f;" target="_blank">Fork Technologies</a>.</span> </div>
+  </div>
+  <!--end copy rights--> 
+  
+  <a href="#" class="scrollup"></a><!-- end scroll to top of the page--> 
+  
+</div>
+<!--end sitewraper--> 
+
+ 
+
+<!-- ######### JS FILES ######### --> 
+<!-- get jQuery from the google apis --> 
+<script type="text/javascript" src="http://wellnetservices.com/js/universal/jquery.js"></script>
+
+<!-- style switcher --> 
+<script src="http://wellnetservices.com/js/style-switcher/jquery-1.js"></script>
+<script src="http://wellnetservices.com/js/style-switcher/styleselector.js"></script>
+
+<!-- mega menu --> 
+<script src="http://wellnetservices.com/js/mainmenu/bootstrap.min.js"></script>
+<script src="http://wellnetservices.com/js/mainmenu/customeUI.js"></script>
+
+<!-- sticky menu --> 
+<script type="text/javascript" src="http://wellnetservices.com/js/mainmenu/sticky.js"></script>
+<script type="text/javascript" src="http://wellnetservices.com/js/mainmenu/modernizr.custom.75180.js"></script>
+
+<!-- scroll up --> 
+<script src="http://wellnetservices.com/js/scrolltotop/totop.js" type="text/javascript"></script>
+
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	<title>{{title}}</title>
+	<link rel='stylesheet' type='text/css' href="{% static "services/css/style.css" %}" />
+	<link rel='stylesheet' type='text/css' href="{% static "services/css/print.css" %}" />
+</head>
+<body>
+	<div id="page-wrap">
+		<div id="header">INVOICE</div>
+		<div id="identity">
+		
+            <div id="address">WellNet Services Pvt. Ltd.<br>
+#1, First Floor, Premprasad complex,<br>
+New BEL Road, RMV extension<br>
+Bangalore 560094<br>
+Karnataka, India<br>
+<br>
+Telephone: +91 99 00 544331<br>
+</div>
+
+            <div id="logo">
+			<img id="image" src="images/logo.png" alt="logo" /><br>
+E-mail: <span style="color: blue; text-decoration: underline;">info@wellnetservices.com</span><br>
+Website: <span style="color: blue; text-decoration: underline;">www.wellnetservices.com</span><br>
+              
+            </div>
+		
+		</div>
+		
+		<div style="clear:both"></div>
+		
+		<div id="customer">
+			<div style="overflow: hidden; width: 450px; float: left;">
+				<div id="customer-title">{{ company_name }}<br>
+	c/o {{ owner_name }}</div>
+				<div id="address" style="height: auto;">
+				Address: {{ company_address }}
+				</div>
+			</div>
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><div>{{invoice_number}}</div></td>
+                </tr>
+                <tr>
+
+                    <td class="meta-head">Date</td>
+                    <td><div id="date">{{invoice_date}}</div></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Amount Due</td>
+                    <td><div class="due">&#8377; {{ invoice_amount }}</div></td>
+                </tr>
+
+            </table>
+		
+		</div>
+		
+		<table id="items">
+		
+		  <tr>
+		      <th>Sl No</th>
+		      <th>Product Description</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+			  <th>VAT%</th>
+			  <th>VAT Amount</th>
+		      <th>Amount</th>
+		  </tr>
+		{% for product in invoice_products %}
+		  <tr class="item-row">
+			  <td>{{ forloop.counter }}</td>
+		      <td class="item-name"><div class="delete-wpr">{{ product.description }}</div></td>
+		      <td><div class="cost">&#8377; {{ product.unit_cost }}</div></td>
+		      <td><div class="qty">{{ product.quantity }}</div></td>
+			  <td>{{ product.vat_percentage }}</td>
+			  <td>&#8377; {{ product.vat }}</td>
+		      <td><span class="price">&#8377; {{ product.total_amount }}</span></td>
+		  </tr>
+		{% endfor %}
+		  <tr style="border-top: 1px solid black;">
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">&#8377; {{ total_amount }}</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Service Tax</td>
+		      <td class="total-value"><div id="total">{{ service_tax }} % on &#8377; {{ service_taxable }}</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Service Tax Amount</td>
+
+		      <td class="total-value"><div id="paid">&#8377; {{ service_tax_total }}</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line balance">Grand Total</td>
+		      <td class="total-value balance"><div class="due">&#8377; {{ grand_total }}</div></td>
+		  </tr>
+		</table>
+		
+		<div id="terms">
+		  <h5>Thank you for your business</h5>
+		  <div>This is an electronically generated invoice and does not require signature. All terms and conditions are as given on <span  style="color: blue; text-decoration: underline;">www.wellnetservices.com</span></div>
+		</div>
+	
+	</div>
+	
+</body>
+
+</html>

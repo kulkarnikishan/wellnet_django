@@ -1,0 +1,32 @@
+diff --git a/wellnet/wellnet/settings.py b/wellnet/wellnet/settings.py
+index 8b35ba3..c08278b 100755
+--- a/wellnet/wellnet/settings.py
++++ b/wellnet/wellnet/settings.py
+@@ -26,7 +26,7 @@ SECRET_KEY = '*a^ymn+15j@u=p3d2l47q*2(qgtytz#+tx+vwia*f-+-^ronus'
+ DEBUG = False
+ 
+ ALLOWED_HOSTS = ALLOWED_HOSTS = ['localhost','127.0.0.1',
+-            '.wellnetservices.com','wellnetservices.com',
++            '.wellnetservices.com','wellnetservices.com', '139.59.24.126',
+             'code.jquery.com', '.googleapis.com']
+ 
+ AUTH_USER_MODEL = "services.BaseUser"
+@@ -112,8 +112,8 @@ else:
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'wellnyg7_wellnet_services',
+             'USER': 'wellnyg7_webuser',
+-            'PASSWORD': 'alf@3$5',
+-            'HOST': '207.174.214.239',
++            'PASSWORD': 'alf@365',
++            'HOST': '127.0.0.1',
+             'PORT': '3306',
+         }
+     }
+@@ -171,6 +171,7 @@ if DEBUG:
+     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+ else:
+     STATIC_URL = 'http://sales.wellnetservices.com/static/'
++    STATIC_URL = 'http://139.59.24.126/static/'
+     STATIC_ROOT = os.path.join(BASE_DIR, "static/services")
+     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+ 

@@ -1,0 +1,16 @@
+{% if channel_partners %}
+	<table class="table table-striped table-bordered">
+		<thead><tr><th class="action-checkbox-column"><span>Select</span></th>
+			<th><span>Company Name</span></th>
+			<th><span>Owner Name</span></th>
+		</tr></thead>
+		{% for cp in channel_partners %}
+		<tr><td class="action-checkbox"><input type="radio" name="cp" id="cp_select" value="{{ cp.id }}"></td>
+			<td>{{ cp.company_name }}</td>
+			<td>{{ cp.owner_name }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% else %}
+	<p style="color: red; text-align: center;">No matching users found. Try again with different query.</p>
+{% endif %}

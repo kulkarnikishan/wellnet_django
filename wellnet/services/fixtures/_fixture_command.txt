@@ -1,0 +1,5 @@
+def load_data_from_fixture(apps, schema_editor):
+    from django.core.management import call_command
+    call_command('loaddata', 'services/fixtures/initial_data.json')
+
+	    migrations.RunPython(load_data_from_fixture),

@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en-gb">
+<!--<![endif]-->
+<head>
+    <title>WellNet Booking</title>
+    <meta charset="utf-8">
+    <!-- Meta -->
+    <meta name="keywords" content=""/>
+    <meta name="author" content="">
+    <meta name="robots" content=""/>
+    <meta name="description" content=""/>
+
+    <!-- this styles only adds some repairs on idevices  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="http://wellnetservices.com/images/favicon.png">
+
+    <!-- Google fonts - witch you want to use - (rest you can just remove) -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic'
+          rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900' rel='stylesheet'
+          type='text/css'>
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--datepicker-->
+    {% load static from staticfiles %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link href="{% static 'css/bootstrap-datetimepicker.css'%}" rel="stylesheet" type="text/css"/>
+    <script src="{% static 'js/bootstrap-datetimepicker.js'%}"></script>
+    {{ form.media }}
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'jquery.datepick.css' %}">-->
+    <!--<script type="text/javascript" src="{% static 'jquery.plugin.js' %}"></script>-->
+    <!--<script type="text/javascript" src="{% static 'jquery.datepick.js' %}"></script>-->
+
+    <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
+    <!--&lt;!&ndash;<link rel="stylesheet" href="/resources/demos/style.css">&ndash;&gt;-->
+    <!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+    <!--<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+
+    <!-- ######### CSS STYLES ######### -->
+
+    <link rel="stylesheet" href="http://wellnetservices.com/css/reset.css" type="text/css"/>
+    <link rel="stylesheet" href="http://wellnetservices.com/css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="http://wellnetservices.com/css/progress-bar.css" type="text/css"/>
+    <link rel="stylesheet" href="http://sales.wellnetservices.com/static/font-awesome/css/font-awesome.min.css">
+
+    <!-- responsive devices styles -->
+    <link rel="stylesheet" media="screen" href="http://wellnetservices.com/css/responsive-leyouts.css" type="text/css"/>
+
+    <!-- mega menu -->
+    <link href="http://wellnetservices.com/js/mainmenu/sticky.css" rel="stylesheet">
+    <link href="http://wellnetservices.com/js/mainmenu/bootstrap.min.css" rel="stylesheet">
+    <link href="http://wellnetservices.com/js/mainmenu/demo.css" rel="stylesheet">
+    <link href="http://wellnetservices.com/js/mainmenu/menu.css" rel="stylesheet">
+
+    <!-- simple line icons -->
+    <link rel="stylesheet" type="text/css"
+          href="http://wellnetservices.com/css/Simple-Line-Icons-Webfont/simple-line-icons.css" media="screen"/>
+
+    <!-- flexslider -->
+    <link rel="stylesheet" href="http://wellnetservices.com/js/flexslider/flexslider.css" type="text/css"
+          media="screen"/>
+
+    <!-- tabs -->
+    <link rel="stylesheet" type="text/css" href="http://wellnetservices.com/js/tabs/assets/css/responsive-tabs.css">
+    <link rel="stylesheet" type="text/css" href="http://wellnetservices.com/js/tabs/assets/css/responsive-tabs7.css">
+
+
+    <!-- forms -->
+    <link rel="stylesheet" href="http://wellnetservices.com/js/form/sky-forms.css" type="text/css" media="all">
+    <link rel="stylesheet" href="http://wellnetservices.com/css/colors/green.css"/>
+
+
+    <style type="text/css">
+        .notify {
+            background-color: #e3f7fc;
+            color: #555;
+            border: .1em solid;
+            border-color: #8ed9f6;
+            border-radius: 10px;
+            font-family: Tahoma, Geneva, Arial, sans-serif;
+            font-size: 1.1em;
+            padding: 10px 10px 10px 10px;
+            margin: 10px;
+            cursor: default;
+        }
+
+        .notify-yellow {
+            background: #fff8c4;
+            border-color: #f7deae;
+        }
+
+        .notify-red {
+            background: #ffecec;
+            border-color: #fad9d7;
+        }
+
+        .notify-green {
+            background: #e9ffd9;
+            border-color: #D1FAB6;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        .loading-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+    <!--<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"-->
+    <!--rel="stylesheet">-->
+
+
+</head>
+
+<body>
+{% block content %}
+<div class="site_wrapper">
+    <header id="header">
+        <!-- Top header bar -->
+        <div id="topHeader">
+            <div class="wrapper">
+                <div class="top_nav">
+                    <div class="container">
+                        <div class="left"><a href="mailto:info@wellnetservices.com"><i class="fa fa-envelope-o"></i>
+                            &nbsp;info@wellnetservices.com</a></div>
+                        <div class="right">
+                            <ul>
+                                <li><a href="https://www.facebook.com/bactakleenindia.india" target="_blank"><i
+                                        class="fa fa-facebook"></i></a></li>
+                                <li><a href="https://twitter.com/BactakleenINDIA" target="_blank"><i
+                                        class="fa fa-twitter"></i></a></li>
+                                <li><a href="mailto:bactakleenindia@gmail.com"><i class="fa fa-google-plus"></i></a>
+                                </li>
+                                <li class="last"><a href="https://in.linkedin.com/in/bactakleen-india-2a48b111a"
+                                                    target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- end right social links -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end top navigation -->
+
+        <div id="trueHeader">
+            <div class="wrapper">
+                <div class="container">
+
+                    <!-- Logo -->
+                    <div class="logo"><a href="http://wellnetservices.com" id="logo"></a></div>
+
+                    <!-- Menu -->
+                    <div class="menu_main">
+                        <div class="navbar yamm navbar-default">
+                            <div class="container">
+                                <div class="navbar-header">
+                                    <div class="navbar-toggle .navbar-collapse .pull-right " data-toggle="collapse"
+                                         data-target="#navbar-collapse-1"><span>Menu</span>
+                                        <button type="button"><i class="fa fa-bars"></i></button>
+                                    </div>
+                                </div>
+                                <div id="navbar-collapse-1" class="navbar-collapse collapse pull-right">
+                                    <nav>
+                                        <ul class="nav navbar-nav">
+                                            <li class="dropdown"><a href="http://wellnetservices.com/"
+                                                                    class="dropdown-toggle">Home</a></li>
+                                            <li class="dropdown"><a href="#" class="dropdown-toggle">Our Offers</a>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a href="http://wellnetservices.com/products.html">Products</a>
+                                                    </li>
+                                                    <li><a href="http://sales.wellnetservices.com/placeorder/">Book a
+                                                        Service</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown"><a href="http://wellnetservices.com/about.html"
+                                                                    class="dropdown-toggle">About</a></li>
+                                            <li class="dropdown"><a href="http://wellnetservices.com/contact.html"
+                                                                    class="dropdown-toggle">Contact</a></li>
+                                            <li class="dropdown"><a href="http://wellnetservices.com/register.html"
+                                                                    class="dropdown-toggle">Join Us</a></li>
+                                            <li class="dropdown"><a href="http://sales.wellnetservices.com/admin/"
+                                                                    class="dropdown-toggle active">Login</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end menu -->
+
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="clearfix"></div>
+
+    <div class="section_holder18">
+        <div class="container">
+            <div class="pagetitle">
+                <h3>Book a Service</h3>
+            </div>
+            <div class="pagenation">&nbsp;<a href="http://wellnetservices.com">Home</a> <i>/</i> Book a Service</div>
+        </div>
+    </div>
+    <!--end pagenation-->
+    <div class="clearfix"></div>
+    <div class="section_holder27">
+        <div class="container">
+            <div class="">
+                <ul class="tabs7" id="tabs">
+                    <li><a href="#example-7-tab-1" target="_self">Book Bactakleen Service</a></li>
+                </ul>
+                <div class="tabs-content7">
+                    <div id="example-7-tab-1" class="tabs-panel7">
+                        <form action="" id="sky-form-new-order" novalidate="novalidate" class="sky-form">
+                            {% csrf_token %}
+                            <div class="clearfix"></div>
+                            <label class="label"><b><u>Customer Details:</u></b></label>
+                            <div id="product-info" style="">
+                                <fieldset>
+                                    <section class="one_third" style="padding-right: 4%;">
+                                        <label class="input">
+                                            <i class="icon-append icon-user"></i>
+                                            <input type="text" name="firstname" id="firstname"
+                                                   placeholder="Name" required style='text-transform:capitalize '>
+                                            <b class="tooltip tooltip-bottom-right">Needed to verify your account</b>
+                                        </label>
+                                    </section>
+
+                                    <section class="one_third" style="padding-right: 4%;">
+                                        <label class="input">
+                                            <i class="icon-append icon-envelope-alt"></i>
+                                            <input type="email" name="email" id="email" placeholder="Email address"
+                                                   required>
+                                            <b class="tooltip tooltip-bottom-right">Needed to verify your account</b>
+                                        </label>
+                                    </section>
+
+                                    <section class="one_third">
+                                        <label class="input">
+                                            <i class="icon-append icon-phone"></i>
+                                            <input type="tel" name="phone" id="phone" placeholder="Phone" required
+                                                   maxlength="10" minlength="10">
+                                            <b class="tooltip tooltip-bottom-right">Needed to verify your account</b>
+                                        </label>
+                                    </section>
+
+                                </fieldset>
+                            </div>
+
+                            <div id="shipping-info" style="padding-top: 5%;">
+
+                                <label class="label"><b><u>Service Details:</u></b></label>
+
+                                <fieldset>
+                                    <section class="one_fourth" style="padding-right: 4%;">
+                                        <label class="label">Service For</label>
+
+                                        <label class="select">
+                                            <select name="product" id="product_id" required onchange="select_service()">
+                                                <option disabled="" selected="" value="0">Select One</option>
+                                                <option value="1">Cars</option>
+                                                <option value="2">Home/Office Space</option>
+                                            </select>
+                                            <i></i>
+
+                                        </label>
+
+                                    </section>
+                                    <section class="one_fourth" style="padding-right: 4%;">
+                                        <label class="label">City</label>
+                                        <label class="select">
+                                            <select name="city" id="city" required>
+                                                <option disabled="" value="0">Select One</option>
+                                                <option value="1" selected>Bangalore</option>
+                                            </select>
+                                            <i></i>
+                                        </label>
+
+                                    </section>
+                                    <section class="one_fourth" style="padding-right: 4%;">
+                                        <label class="label">Payment Options</label>
+
+                                        <label class="select">
+                                            <select name="payment_options" id="payment_options">
+                                                <option disabled="" selected="" value="0">Select One</option>
+
+                                                <option value="1">Payment at the time of Service</option>
+
+                                            </select>
+                                            <i></i>
+
+                                        </label>
+                                    </section>
+                                    <div class="" style="display: none" id="cars_service">
+                                        <section class="col col-12" style="padding-right: 4%;">
+                                            <label class="radio col-3"><input type="radio" name="car_dealer"
+                                                                              id="car1"
+                                                                              onclick="switchView('#puv1');"><i></i>Service
+                                                At Dealership Network</label>
+                                            <label class="radio col-3"><input type="radio" name="door_step"
+                                                                              id="car2"
+                                                                              onclick="switchView('#puv2');"><i></i>Doorstep
+                                                Service</label>
+                                        </section>
+                                    </div>
+                                    <div style="display: none" id="home_office">
+                                        <section class="one_full" style="padding-right: 4%;">
+                                            <label class="label">Dealer</label>
+                                            <label class="select">
+                                                <select name="home_dealer" id="home_dealer" required>
+                                                    <option disabled="" selected="" value="0">Select One
+                                                    </option>
+                                                    {%if dealers%}
+                                                    {%for x in dealers %}
+                                                    {%if 'category' in x %}
+                                                    {%if "Pest Control-Homes/office" == x.category %}
+                                                    {% if x.service_area != "Door step service" %}
+                                                    <option value="{{x.id}}">{{x.company}},
+                                                        {{x.authorised_person}}, {{x.address}}
+                                                    </option>
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endfor%}
+                                                    {%endif%}
+
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+                                        <section class="one_half" style="padding-right: 2%;">
+                                            <label class="label">Area (in sqft)</label>
+                                            <label class="input">
+                                                <i class="icon-append icon-edit"></i>
+                                                <input type="number" name="area_in_sqft" id="area_in_sqft"
+                                                       placeholder="Enter area in 'sqft'(INR. 3.00 /Sqft)"
+                                                       onkeyup="calculate_total_amount()"
+                                                       onchange="calculate_total_amount()"
+                                                       onkeydown="calculate_total_amount()"
+                                                       onkeypress="calculate_total_amount()">
+                                            </label>
+                                        </section>
+                                        <section class="one_half" style="padding-right: 2%;">
+                                            <label class="label">Total Amount</label>
+                                            <label class="input">
+                                                <i class="icon-append icon-edit"></i>
+                                                <input name="total_amount" id="total_amount"
+                                                       placeholder="" readonly value="0">
+                                            </label>
+                                        </section>
+
+                                        <section class="one_full" style="">
+                                            <label class="label">Address</label>
+                                            <label class="input">
+                                                <textarea rows="3" name="address" id="home_"
+                                                          placeholder="Enter your address" cols="50"></textarea>
+                                            </label>
+                                        </section>
+                                        <section class="one_third" style="padding-right: 8%;">
+                                            <label class="label">Landmark</label>
+                                            <label class="input">
+                                                <i class="icon-append icon-user"></i>
+                                                <input type="text" name="landmark_pest" id="landmark_pest"
+                                                       placeholder="Enter Landmark" required>
+                                                <b class="tooltip tooltip-bottom-right">Need your landmark</b>
+                                            </label>
+                                        </section>
+
+                                    </div>
+                                    <div id="puv1" style="display: none; padding-right: 4%">
+                                        <section class="one_third" style="padding-right: 8%;">
+                                            <label class="label">Area</label>
+                                            <label class="select">
+
+                                                <select name="area" id="area" required onchange="">
+                                                    <option disabled="" selected="" value="0">Select One
+                                                    </option>
+                                                    {%if dealers%}
+                                                    {%for x in dealers %}
+                                                    {%if 'category' in x %}
+                                                    {%if "Car" == x.category %}
+                                                    {% if x.service_area != "Door step service" %}
+
+                                                    <option value="{{x.id}}">
+                                                        {{x.area}}
+                                                    </option>
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endfor%}
+                                                    {%endif%}
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+                                        <section class="one_third" style="padding-right: 8%;">
+                                            <label class="label">Dealer</label>
+                                            <label class="select">
+                                                <select name="dealer_network" id="dealer" required>
+                                                    <option disabled="" selected="" value="0">Select One</option>
+                                                    {%if dealers%}
+                                                    {%for x in dealers%}
+                                                    {%if 'category' in x %}
+                                                    {%if "Car" == x.category %}
+                                                    {% if x.service_area != "Door step service" %}
+                                                    <option value="{{x.id}}">{{x.company}},
+                                                        {{x.authorised_person}}, {{x.address}}
+                                                    </option>
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endif%}
+                                                    {%endfor%}
+                                                    {%endif%}
+                                                </select>
+                                                <i></i>
+                                            </label>
+                                        </section>
+                                        <section class="one_third" style="padding-right: 4%;">
+                                            <P> Price : INR. 1200.00 </P>
+                                        </section>
+                                    </div>
+                                    <div id="puv2" style="display: none;">
+                                        <div>
+                                            <section class="one_full" style="padding-right: 8%;">
+                                                <label class="label">Dealer</label>
+                                                <label class="select">
+                                                    <select name="dealer_doorstep" id="dealer1" required>
+                                                        <option disabled="" selected="" value="0">Select One
+                                                        </option>
+                                                        {%if dealers%}
+                                                        {%for x in dealers%}
+                                                        {%if 'category' in x %}
+                                                        {%if "Car" == x.category %}
+                                                        {% if x.service_area == "Door step service" %}
+                                                        <option value="{{x.id}}">{{x.company}},
+                                                            {{x.authorised_person}}, {{x.address}}
+                                                        </option>
+                                                        {%endif%}
+                                                        {%endif%}
+                                                        {%endif%}
+                                                        {%endfor%}
+                                                        {%endif%}
+                                                    </select>
+                                                    <i></i>
+                                                </label>
+                                            </section>
+                                            <section class="one_full" style="padding-right: 8%;">
+                                                <label class="label">Address</label>
+                                                <label class="input">
+                                                    <i class="icon-append icon-edit"></i>
+                                                    <textarea rows="3" name="home_address" id="home_address"
+                                                              placeholder="Enter your address" cols="50"
+                                                              required></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="one_third" style="padding-right: 8%;">
+                                                <label class="label">Landmark</label>
+                                                <label class="input">
+                                                    <i class="icon-append icon-user"></i>
+                                                    <input type="text" name="landmark" id="landmark"
+                                                           placeholder="Enter Landmark" required>
+                                                    <b class="tooltip tooltip-bottom-right">Need your landmark</b>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="one_full" style="clear: both;">
+                                            <section style="">
+                                                <P> Price : INR. 1400.00 </P>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div id="date_field" style="display: none">
+                                <section class="one_full">
+                                    <label class="label">Date</label>
+                                    {{form.booking_date }}
+                                </section>
+                            </div>
+                            <footer>
+                                <div class="fright">
+                                    <p style="float: left;">&nbsp;&nbsp;</p>
+                                    <button id="next" type="submit" class="button eight"
+                                            onclick="progressControlDummy(true)"
+                                            name="next" value="new_order">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </footer>
+                        </form>
+                    </div>
+                    <!-- end tab 1 -->
+
+                </div>
+                <!-- end all tabs -->
+            </div>
+            <!--end tab style 2-->
+        </div>
+        <div class="clearfix"></div>
+        <div class="punchtext">
+            <div class="container">
+                <div class="text">
+                    <h4 class="white margin_top1">Get Excellent Unique Products that adds value to your life with
+                        WellNet</h4>
+                </div>
+                <div class="but"><a href="#" class="readmore_but2">Buy now!</a></div>
+            </div>
+        </div>
+        <!--end punch text-->
+        <div class="clearfix"></div>
+        <div class="footer1">
+            <div class="social_links two">
+                <div class="container">
+                    <ul class="social_icons">
+                        <li><a href="https://www.facebook.com/bactakleenindia.india"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li><a href="https://twitter.com/BactakleenINDIA"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="mailto:bactakleenindia@gmail.com"><i class="fa fa-google-plus"></i></a></li>
+                        <li><a href="https://in.linkedin.com/in/bactakleen-india-2a48b111a"><i
+                                class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="container">
+                <div class="one_fourth">
+                    <h4 class="white">About WellNet</h4>
+                    <div class="footer_title_line"></div>
+                    <ul class="quick_links">
+                        <li><a href="http://wellnetservices.com/about.html">About US</a></li>
+                        <li><a href="http://wellnetservices.com/about.html#ourstory">Our Story</a></li>
+                        <li><a href="http://wellnetservices.com/about.html#meetourteam">Meet Our Team</a></li>
+                        <li><a href="http://wellnetservices.com/contact.html">Contact US</a></li>
+                    </ul>
+                </div>
+                <!--end about WellNet-->
+
+                <div class="one_fourth">
+                    <h4 class="white">Products & Services</h4>
+                    <div class="footer_title_line"></div>
+                    <ul class="quick_links">
+                        <li><a href="http://wellnetservices.com/products.html">Backtakleen</a></li>
+                        <li><a href="http://wellnetservices.com/products.html?action=germbuster">Germbuster</a></li>
+                        <li><a href="http://sales.wellnetservices.com/placeorder/">Book a Service</a></li>
+                        <li><a href="http://wellnetservices.com/product-backtakleen-faqs.html">FAQs</a></li>
+                    </ul>
+                </div>
+                <!--end products and services-->
+
+                <div class="one_fourth">
+                    <h4 class="white">News &amp; Media</h4>
+                    <div class="footer_title_line"></div>
+                    <ul class="quick_links">
+                        <li><a href="http://wellnetservices.com/product-backtakleen-health-tips.html">Health Tips</a>
+                        </li>
+                        <li><a href="http://wellnetservices.com/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="http://wellnetservices.com/terms-n-conditions.html">Terms &amp; Conditions</a></li>
+                        <li><a href="#">Certification</a></li>
+                    </ul>
+                </div>
+                <!--end legal-->
+
+                <div class="one_fourth last">
+                    <h4 class="white">Get Connected</h4>
+                    <div class="footer_title_line"></div>
+                    <ul class="quick_links">
+                        <li><a href="http://wellnetservices.com/contact.html">Contact Us</a></li>
+                        <li><a href="http://wellnetservices.com/register.html?action=register">Join Us</a></li>
+                        <li><a href="http://wellnetservices.com/register.html?action=meet">Meet our Representative</a>
+                        </li>
+                        <li><a href="http://wellnetservices.com/register.html?action=refer">Refer</a></li>
+                    </ul>
+                </div>
+                <!--end need help-->
+            </div>
+        </div>
+        <!--end footer-->
+        <div class="copyrights">
+            <div class="container"><span>Copyright © 2015 wellnetservices.com All rights reserved.</span><span
+                    class="text2">Design and developed by <a
+                    href="http://forktechnologies.com" style="color: #3fc35f;"
+                    target="_blank">Fork Technologies</a>.</span>
+            </div>
+        </div>
+        <!--end copy rights-->
+
+        <a href="#" class="scrollup"></a><!-- end scroll to top of the page-->
+
+    </div>
+</div>
+<!--end sitewraper-->
+
+<div class="modal fade" id="myModal" role="dialog" style="z-index:4048;">
+    <div class=" modal-dialog" style="left: 50%;top: 50%;text-align: center">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id=>Wellnet Service Booking</h4>
+            </div>
+            <div class="modal-body" id="model_body">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="loader" role="dialog" style="z-index:4048;">
+    <div class="modal-dialog" style="position:fixed; width: 400px ;vertical-align: middle;">
+        <div class="modal-content">
+
+            <div id="WaitDialog" class="" style="width: auto;text-align: center">
+                <img src="https://media.giphy.com/media/y1ZBcOGOOtlpC/giphy.gif"/>
+                <div style="margin-top: 10px;">
+                    <b>Please wait</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ######### JS FILES ######### -->
+<!--get jQuery from the google apis-->
+<script type="text/javascript" src="http://wellnetservices.com/js/universal/jquery.js"></script>
+
+<link rel='stylesheet' type='text/css' href='https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css'/>
+<!--<script type='text/javascript' src='script.js'></script>-->
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+
+
+style switcher
+<script src="http://wellnetservices.com/js/style-switcher/jquery-1.js"></script>
+<script src="http://wellnetservices.com/js/style-switcher/styleselector.js"></script>
+
+<!-- mega menu -->
+<script src="http://wellnetservices.com/js/mainmenu/bootstrap.min.js"></script>
+<script src="http://wellnetservices.com/js/mainmenu/customeUI.js"></script>
+
+<!-- sticky menu -->
+<script type="text/javascript" src="http://wellnetservices.com/js/mainmenu/sticky.js"></script>
+<script type="text/javascript" src="http://wellnetservices.com/js/mainmenu/modernizr.custom.75180.js"></script>
+
+<!-- scroll up -->
+<script src="http://wellnetservices.com/js/scrolltotop/totop.js" type="text/javascript"></script>
+<script src="http://wellnetservices.com/js/tabs/assets/js/responsive-tabs.min.js" type="text/javascript"></script>
+<script src="http://wellnetservices.com/js/form/jquery.form.min.js" type="text/javascript"></script>
+<script src="http://wellnetservices.com/js/form/jquery.validate.min.js"></script>
+
+
+{% endblock %}
+
+
+<script type="text/javascript">
+    $().ready(function () {
+
+        $.validator.addMethod("valueNotEquals", function (value, element, arg) {
+            return (arg != value);
+        }, "Value must not equal arg.");
+        $.validator.addMethod('phoneUS', function (phone_number, element) {
+            phone_number = phone_number.replace(/\s+/g, '');
+            return this.optional(element) || phone_number.length > 9 &&
+                phone_number.match(/^(1-?)?(\([0-9]\d{2}\)|[0-9]\d{2})-?[0-9]\d{2}-?\d{4}$/);
+        }, 'Please enter a valid phone number.');
+        // validate sky-form-new-order form on keyup and submit
+        $('#sky-form-new-order').validate({
+            debug: true,
+            rules: {
+                product: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                },
+                quantity: {
+                    required: true,
+                    valueNotEquals: "0"
+                },
+                city: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+                },
+                home_dealer: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                }, dealer_doorstep: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                }, dealer_network: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                },
+                firstname: {
+                    required: true,
+                    minlength: 3
+                },
+                phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    phoneUS: true
+                },
+                address: {
+                    required: true,
+                    minlength: 5,
+//
+                }, home_address: {
+                    required: true,
+                    minlength: 5,
+//
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                payment_options: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                }, area: {
+                    required: true,
+                    valueNotEquals: "0",
+                    min: 1,
+
+                }, booking_date: {
+                    required: true,
+
+                }, area_in_sqft: {
+                    required: true,
+
+                }, landmark: {
+                    required: true,
+
+                }, landmark_pest: {
+                    required: true,
+
+                },
+            },
+            messages: {
+                product: {
+                    required: "This field is required!"
+                    , valueNotEquals: "Please select a Service!",
+                    min: "Please select any one Product!"
+                },
+                quantity: {valueNotEquals: 'please enter the product quantity'},
+                city: {
+                    required: "This field is required!"
+                    , valueNotEquals: "Please select an City!", min: 'Please do select your city'
+                },
+                home_dealer: {
+                    required: "This field is required!"
+                    , valueNotEquals: "Please select Dealer!", min: 'Please do select your dealer'
+                }, dealer_network: {
+                    required: "This field is required!"
+                    , valueNotEquals: "Please select Dealer!", min: 'Please do select your dealer'
+                }, dealer_doorstep: {
+                    required: "This field is required!"
+                    , valueNotEquals: "Please select Dealer!", min: 'Please do select your dealer'
+                },
+                firstname: {
+                    required: "This field is required",
+                    minlength: "please enter Contact Name of length 3 characters"
+                },
+                lastname: "Please enter your lastname",
+
+                phone: {
+                    required: "Please provide a Phone number",
+                    minlength: "Phone number must be 10 digits",
+                    maxlength: "Phone number must be 10 digits"
+
+                },
+                email: {
+                    required: "This field is required",
+                    email: 'Please enter a valid email address'
+                },
+                payment_options: {
+                    valueNotEquals: "Please select a Payment option!",
+                    min: 'Please select your Payment option!'
+                }, area: {
+                    valueNotEquals: "Please select a Area option!",
+                    min: 'Please select your Payment option!'
+                },
+                address: {
+                    required: "This field is required",
+
+                    minlength: "Enter your message 3-70 characters"
+
+                }, home_address: {
+                    required: "This field is required",
+
+                    minlength: "Enter your message 3-70 characters"
+
+                },
+                booking_date: {
+                    required: "This field is required",
+                }, area_in_sqft: {
+                    required: "This field is required",
+                }, landmark: {
+                    required: "This field is required",
+
+                }, landmark_pest: {
+                    required: "This field is required",
+
+                },
+            }
+        });
+    });
+
+    function switchView(view) {
+
+        $("#puv1, #puv2").hide();
+        if (view == '#puv1') {
+            $("#car2").attr('checked', false)
+            $("#car1").attr('checked', true)
+        }
+        if (view == '#puv2') {
+            $("#car2").attr('checked', true)
+            $("#car1").attr('checked', false)
+        }
+        $('#date_field').show()
+        $(view).show();
+    }
+
+    function select_service() {
+        $("#puv1, #puv2").hide();
+        $("#car2, #car1").prop('checked', false);
+
+        if ($("#product_id option:selected").val() == '1') {
+            $('#cars_service').css("padding-top", "10%");
+            $('#home_office').hide()
+            $('#cars_service').show()
+            $('#date_field').hide()
+
+
+        } else if ($("#product_id option:selected").val() == '2') {
+            $('#cars_service').hide()
+            $('#home_office').css("padding-top", "10%");
+            $('#home_office').show()
+            $('#date_field').show()
+
+        } else {
+
+        }
+
+    }
+
+    $("#area").change(function () {
+        if ($(this).data('options') == undefined) {
+            /*Taking an array of all options-2 and kind of embedding it on the select1*/
+            $(this).data('options', $('#dealer option').clone());
+        }
+        var id = $(this).val();
+        var options = $(this).data('options').filter('[value=' + id + ']');
+        if (options.length != 0) {
+            $('#dealer').html(options);
+            $('#dealer').append("<option disabled = '' selected = '' value = '0' > Select One </option>")
+        }
+        else {
+            var option = document.createElement("option");
+            option.text = "NO Dealers Available";
+            option.value = "0"
+            $('#dealer').html(options);
+            $('#dealer').append(option);
+        }
+    });
+    $(document).ready(function () {
+        $('#sky-form-new-order').trigger('reset');
+        $("input[name='booking_date']").attr('readonly', false);
+        $('#myModal').on('hidden.bs.modal', function () {
+            window.location.reload(true);
+        })
+
+    });
+    function calculate_total_amount() {
+        var sqft = $("#area_in_sqft").val()
+        if (sqft != "" && sqft != null) {
+            $("#total_amount").val(parseFloat(sqft) * 3.00)
+        } else {
+            $("#total_amount").val(0)
+        }
+    }
+    var new_order_data = "";
+    function progressControlDummy() {
+        var flag = false
+        if ($("#firstname").val() && $("#email").val() != "" && $("#phone").val() != "" && $("#product_id option:selected").val() != 0 && $("#city option:selected").val() != 0 &&
+            $("#payment_options option:selected").val() != 0) {
+            if ($("#product_id option:selected").val() == 1) {
+                if ($('#car1').is(':checked')) {
+
+                    if ($("#area option:selected").val() != 0 && $("#dealer option:selected").val() != 0 && $("input[name=booking_date]").val() != "") {
+                        flag = true
+                    }
+                } else if ($('#car2').is(':checked')) {
+                    if ($("#dealer1  option:selected").val() != 0 && $("#home_address").val() != "" && $("#landmark").val() != "" && $("input[name=booking_date]").val() != "") {
+                        flag = true
+                    }
+                }
+            } else {
+                if ($("#home_dealer option:selected").val() != 0 && $("#home_").val() != "" && $("#landmark_pest").val() != "" && $("#area_in_sqft").val() != "" && $(" input[name='booking_date]").val() != "") {
+                    flag = true
+                }
+            }
+        }
+
+        if (flag) {
+            $.ajax({ // create an AJAX call...
+                data: $('#sky-form-new-order').serialize(), // get the form data
+                type: 'POST', // GET or POST
+                url: $('#sky-form-new-order').attr('action'), // the file to
+                async: false,
+                success: function (response) {
+                    new_order_data = response
+                },
+                error: function (e, x, r) { // on error..
+                }
+
+            });
+            if (new_order_data.status == 'SUCCESS') {
+                $("#model_body").empty()
+                $("#model_body").append("<p>" + new_order_data.message + "</p>");
+                $("#myModal").modal({backdrop: false});
+
+            } else {
+                alert(new_order_data.message)
+            }
+
+        }
+    }
+
+</script>
+
+</body>
+</html>

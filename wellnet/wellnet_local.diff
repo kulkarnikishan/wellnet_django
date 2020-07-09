@@ -1,0 +1,73 @@
+diff --git a/wellnet/wellnet/settings.py b/wellnet/wellnet/settings.py
+index 8b35ba3..69de176 100755
+--- a/wellnet/wellnet/settings.py
++++ b/wellnet/wellnet/settings.py
+@@ -23,10 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ SECRET_KEY = '*a^ymn+15j@u=p3d2l47q*2(qgtytz#+tx+vwia*f-+-^ronus'
+ 
+ # SECURITY WARNING: don't run with debug turned on in production!
+-DEBUG = False
++DEBUG = True
++DEBUG1 = False
+ 
+ ALLOWED_HOSTS = ALLOWED_HOSTS = ['localhost','127.0.0.1',
+-            '.wellnetservices.com','wellnetservices.com',
++            '.wellnetservices.com','wellnetservices.com', '139.59.24.126',
+             'code.jquery.com', '.googleapis.com']
+ 
+ AUTH_USER_MODEL = "services.BaseUser"
+@@ -99,7 +100,7 @@ BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
+ LOGIN_URL = '/admin/login'
+ # Database
+ # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+-if DEBUG:
++if DEBUG1:
+     DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.sqlite3',
+@@ -111,9 +112,9 @@ else:
+         'default': {
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'wellnyg7_wellnet_services',
+-            'USER': 'wellnyg7_webuser',
+-            'PASSWORD': 'alf@3$5',
+-            'HOST': '207.174.214.239',
++            'USER': 'root',
++            'PASSWORD': 'Fork90909',
++            'HOST': '127.0.0.1',
+             'PORT': '3306',
+         }
+     }
+@@ -133,7 +134,7 @@ CACHES = {
+ SELECT2_CACHE_BACKEND = 'select2'
+ SELECT2_CACHE_PREFIX = 'SELECT2_'
+ 
+-if DEBUG:
++if DEBUG1:
+     EMAIL_USE_TLS = True
+     EMAIL_HOST = 'smtp.gmail.com'
+     EMAIL_PORT = 587
+@@ -165,12 +166,13 @@ USE_TZ = True
+ 
+ # Static files (CSS, JavaScript, Images)
+ # https://docs.djangoproject.com/en/1.8/howto/static-files/
+-if DEBUG:
++if DEBUG1:
+     STATIC_URL = '/static/'
+     STATIC_ROOT = os.path.join(BASE_DIR, "static/services")
+     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+ else:
+     STATIC_URL = 'http://sales.wellnetservices.com/static/'
++    STATIC_URL = 'http://139.59.24.126/static/'
+     STATIC_ROOT = os.path.join(BASE_DIR, "static/services")
+     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+ 
+@@ -219,7 +221,7 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y', '%d-%m-%Y', '%d/%m/%y', '%d %b %Y',
+ DATETIME_INPUT_FORMATS = ('%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M', '%d/%m/%Y',
+                           '%d/%m/%y %H:%M:%S', '%d/%m/%y %H:%M', '%d/%m/%y',
+                           '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%d')
+-if not DEBUG:
++if not DEBUG1:
+     WKHTMLTOPDF_CMD = '/opt/wellnet_server/wkhtmltopdf.sh'
+ 
+ EKONNECT_ACCOUNT_ID = "2d32469b-e4b7-4d51-934d-fcbd4b55c368"

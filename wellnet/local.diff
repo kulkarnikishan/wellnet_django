@@ -1,0 +1,22 @@
+diff --git a/wellnet/wellnet/settings.py b/wellnet/wellnet/settings.py
+index bcab4b2..f43d731 100755
+--- a/wellnet/wellnet/settings.py
++++ b/wellnet/wellnet/settings.py
+@@ -115,7 +115,7 @@ else:
+             'ENGINE': 'django.db.backends.mysql',
+             'NAME': 'wellnyg7_wellnet_services',
+             'USER': 'root',
+-            'PASSWORD': 'alf@3$5',
++            'PASSWORD': 'Fork90909',
+             'HOST': '127.0.0.1',
+             'PORT': '3306',
+         }
+@@ -224,7 +224,7 @@ DATETIME_INPUT_FORMATS = ('%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M', '%d/%m/%Y',
+                           '%d/%m/%y %H:%M:%S', '%d/%m/%y %H:%M', '%d/%m/%y',
+                           '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%d')
+ if not DEBUG:
+-    WKHTMLTOPDF_CMD = '/opt/wellnet_server/wkhtmltopdf.sh'
++    WKHTMLTOPDF_CMD = '/opt/wellnet/wkhtmltopdf.sh'
+ 
+ EKONNECT_ACCOUNT_ID = "2d32469b-e4b7-4d51-934d-fcbd4b55c368"
+ EKONNECT_NEW_BOOKING_TEMPLATE_ID = "24e4bc65-c32a-4ff2-ac9b-5ced75df0d1a"
