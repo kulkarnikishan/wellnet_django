@@ -16,7 +16,7 @@ django-wkhtmltopdf==3.0.0
 docopt==0.6.2
 gunicorn==19.4.5
 html5lib==0.9999999
-lxml==3.5.0
+lxml==4.6.2
 PyMySQL==0.9.3
 Pillow==3.1.0
 pycparser==2.14
